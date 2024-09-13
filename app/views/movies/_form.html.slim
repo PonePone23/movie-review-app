@@ -1,0 +1,122 @@
+/ This block is to include stylesheet
+
+- content_for :head do
+  = stylesheet_link_tag "movie/form", as:"style"
+  = javascript_include_tag "preview_image_movie", as:"script"
+  = javascript_include_tag "image_drag_drop", as:"script"
+
+/ Section for creating and editing movie
+= form_with model: movie do |form|
+  div.row.mt-5.sec-movie-form#drag-drop-section
+    div.col-lg-4.col-10.mx-auto
+      h5.text-center.text-white Cover Photo
+      div.sec-cover-photo
+        div.form-group.text-center.drop-zone#drop-zone
+          - if @movie.image.attached? && @movie.persisted?
+            - if @movie.image.respond_to?(:id)
+              - image_url = url_for(@movie.image)
+              = image_tag image_url, id: "preview-image", style: "width: 100%; height: 50%;"
+          - else
+            = image_tag "", id: "preview-image", style: "display: none; width: 100%; height: 50%;"
+          p Drag and drop here to upload.
+          p File Supported : JPG, JPEG, PNG
+        .pb-3.text-center
+          label.btn.btn-browse-image#browse-button for="image" Browse Image
+          = form.file_field :image, id: "image", class: "form-control", style: "display: none;"
+          - movie.errors.full_messages_for(:image).each do |message|
+            div.error-message= message
+
+
+    div.col-lg-8.col-12
+      .row.g-3
+        div.col-12.form-group
+          .d-flex
+            = form.label :name, "Title"
+            span.required-asterisk *
+          = form.text_field :name, placeholder: "Movie Title", class: "form-control"
+          - movie.errors.full_messages_for(:name).each do |message|
+            div.error-message= message
+
+
+        div.col-12.form-group
+          .d-flex
+            = form.label :review, "Description"
+            span.required-asterisk *
+          = form.text_area :review , placeholder: "Description", class: "form-control", style: "resize: none;", rows: 5
+          - movie.errors.full_messages_for(:review).each do |message|
+            div.error-message= message
+        br
+
+
+          div.col-6.form-group.mt-3
+            .d-flex
+              = form.label :release_date, "Release Date"
+              span.required-asterisk *
+            = form.date_field :release_date, class: "form-control"
+            - movie.errors.full_messages_for(:release_date).each do |message|
+              div.error-message= message
+          br
+
+          div.col-6.form-group.mt-3
+            .d-flex
+              = form.label :duration, "Duration"
+              span.required-asterisk *
+            = form.text_field :duration, placeholder: "Duration",class: "form-control"
+            - movie.errors.full_messages_for(:duration).each do |message|
+              div.error-message= message
+        br
+
+
+          div.col-6.form-group.mt-3
+            .d-flex
+              = form.label :genre_ids, "Genres"
+              span.required-asterisk *
+            - if @genres.present?
+              = form.select :genre_ids, options_for_select(@genres.map { |genre| [genre.name, genre.id] }, movie.genre_ids), {}, { class: "form-control", multiple: true }
+              - unless movie.genres.present?
+                div.error-message Choose at least one genre.
+            - else
+              p No genres found.
+          br
+
+          div.col-6.form-group.mt-3
+            = form.label :country, "Country"
+            br
+            = form.text_field :country, placeholder: "Country", class: "form-control"
+            - movie.errors.full_messages_for(:country).each do |message|
+              div.error-message= message
+
+
+          div.col-6.form-group.mt-3
+            = form.label :production, "Production"
+            br
+            = form.text_field :production, placeholder: "Production", class: "form-control"
+            - movie.errors.full_messages_for(:production).each do |message|
+              div.error-message= message
+          br
+
+          div.col-6.form-group.mt-3
+            = form.label :casts, "Casts"
+            = form.text_field :casts, placeholder: "Casts (Seperate by comma)", class: "form-control"
+            - movie.errors.full_messages_for(:casts).each do |message|
+              div.error-message= message
+
+      div.col-6.form-group.mt-3
+        = form.label :director, "Director"
+        br
+        = form.text_field :director, placeholder: "Director", class: "form-control"
+        - movie.errors.full_messages_for(:director).each do |message|
+          div.error-message= message
+      br
+
+      div.col-12.form-group.mt-3
+        = form.label :trailer_url, "Trailer url"
+        span.required-asterisk *
+        = form.text_field :trailer_url, placeholder: "Trailer Url",class: "form-control"
+        - movie.errors.full_messages_for(:trailer_url).each do |message|
+          div.error-message= message
+      br
+
+        div.d-flex.justify-content-end.mt-3
+          = link_to "Cancel", root_path, class: "btn-cancel btn btn-secondary px-3"
+          = form.submit "Publish", class: "btn btn-publish px-3"

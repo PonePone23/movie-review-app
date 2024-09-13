@@ -1,0 +1,3 @@
+// app/views/reactions/create.js.erb
+
+$("#reactions_<%= @discussion.id %>").html("<%= escape_javascript(render @reaction) %>");

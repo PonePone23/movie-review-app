@@ -1,0 +1,12 @@
+/ Section for search result of movies
+div.row.sec-search.container-fluid
+  .col-lg-3.col-1
+
+  .inner-width.container-fluid.search-btn.col-lg-6.col-10
+    div.input-group
+      = form_tag(search_path, method: "get") do
+        = search_field_tag :search, params[:search], placeholder: "Search Movie by movie title, casts, director or country...", class: "form-control"
+        = button_tag type: "submit" do
+          = image_tag('icn-search.svg', alt: 'Image Logo', class: 'movie-input-group-append-icon')
+
+  .col-lg-3.col-1

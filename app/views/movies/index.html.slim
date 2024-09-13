@@ -1,0 +1,333 @@
+/ This block is for including stylesheet and javascript
+- content_for :head do
+  = stylesheet_link_tag "movie/index", as:"style"
+  = javascript_include_tag 'filter', as:"script"
+
+/ Section for showing list of movies
+div.inner-width.container-fluid.sec-home
+  .row.mt-5.mb-3.justify-content-between
+    .col-lg-1.col-3
+      h2 Movies
+    .col-lg-3.col-9
+      .d-flex.align-items-center.justify-content-end
+        p.filter-ttl Filter by :
+        .dropdown
+          button#dropdownMenuButton.small-font.filter-btn.dropdown-toggle(type="button" data-bs-toggle="dropdown" aria-expanded="false")
+            |
+          ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
+              li
+                button#GenreModel.small-font.dropdown-item(type="button") Genre
+              li
+                button#YearModel.small-font.dropdown-item(type="button") Year
+
+  .sec-filter-carousel#genreCarousel.carousel.slide
+    button.carousel-control-prev(type="button" data-bs-target="#genreCarousel" data-bs-slide="prev")
+      span.carousel-control-prev-icon(aria-hidden="true")
+      span.visually-hidden Previous
+    button.carousel-control-next(type="button" data-bs-target="#genreCarousel" data-bs-slide="next")
+      span.carousel-control-next-icon(aria-hidden="true")
+      span.visually-hidden Next
+    .carousel-inner
+      - @genres.each_slice(4).with_index do |genre_group, index|
+        .carousel-item(class=(index == 0 ? 'active' : ''))
+          .link-container.d-flex.justify-content-evenly.genre-btn
+            = link_to "All", root_path, class: "home-btn",class:("all-btn-active" if current_page?(root_path) || current_page?(movies_path))
+            - genre_group.each do |genre|
+              = link_to genre.name, movies_by_genre_path(genre_id: genre.id), class: "home-btn"
+
+  .sec-filter-carousel#genre.carousel.slide
+    button.carousel-control-prev(type="button" data-bs-target="#genre" data-bs-slide="prev")
+      span.carousel-control-prev-icon(aria-hidden="true")
+      span.visually-hidden Previous
+    button.carousel-control-next(type="button" data-bs-target="#genre" data-bs-slide="next")
+      span.carousel-control-next-icon(aria-hidden="true")
+      span.visually-hidden Next
+    .carousel-inner
+      - @genres.each_slice(2).with_index do |genre_group, index|
+        .carousel-item(class=(index == 0 ? 'active' : ''))
+          .link-container.d-flex.justify-content-evenly.genre-btn
+            = link_to "All", root_path, class: "home-btn",class:("all-btn-active" if current_page?(root_path) || current_page?(movies_path))
+            - genre_group.each do |genre|
+              = link_to genre.name, movies_by_genre_path(genre_id: genre.id), class: "home-btn"
+
+  #yearCarousel.carousel.slide
+    button.carousel-control-prev(type="button" data-bs-target="#yearCarousel" data-bs-slide="prev")
+      span.carousel-control-prev-icon(aria-hidden="true")
+      span.visually-hidden Previous
+    button.carousel-control-next(type="button" data-bs-target="#yearCarousel" data-bs-slide="next")
+      span.carousel-control-next-icon(aria-hidden="true")
+      span.visually-hidden Next
+    .carousel-inner
+      - @years.each_slice(4).with_index do |year_group, index|
+        .carousel-item(class=(index == 0 ? 'active' : ''))
+          .link-container.d-flex.justify-content-evenly.genre-btn
+            = link_to "All", root_path, class: "home-btn",class:("all-btn-active" if current_page?(root_path) || current_page?(movies_path))
+            - year_group.each do |year|
+              = link_to year.year, year_path(year), class: "home-btn"
+
+  #year.carousel.slide
+    button.carousel-control-prev(type="button" data-bs-target="#year" data-bs-slide="prev")
+      span.carousel-control-prev-icon(aria-hidden="true")
+      span.visually-hidden Previous
+    button.carousel-control-next(type="button" data-bs-target="#year" data-bs-slide="next")
+      span.carousel-control-next-icon(aria-hidden="true")
+      span.visually-hidden Next
+    .carousel-inner
+      - @years.each_slice(2).with_index do |year_group, index|
+        .carousel-item(class=(index == 0 ? 'active' : ''))
+          .link-container.d-flex.justify-content-evenly.genre-btn
+            = link_to "All", root_path, class: "home-btn",class:("all-btn-active" if current_page?(root_path) || current_page?(movies_path))
+            - year_group.each do |year|
+              = link_to year.year, year_path(year), class: "home-btn"
+  .row.mt-5
+    - @movies.each do |movie|
+      .col-md-3.col-lg-2.col-4.mb-3
+        = link_to movie do
+          .home-card.card.border-0.bg-transparent.mt-1.mb-3
+            = image_tag url_for(movie.image), class: "card-img-top" if movie.image.attached?
+            - if current_user
+              .save-movie
+                  - if current_user && current_user.saved_movies.map(&:movie_id).include?(movie.id)
+                      = link_to({ action: :unsave, id: movie.id }, method: :post) do
+                        = image_tag 'saved_bookmark.svg', class: "bookmark",title: "Unsave movie?"
+                  - else
+                      = link_to({ action: :save, id: movie.id }, method: :post) do
+                        = image_tag 'unsaved_bookmark.svg', class: "bookmark",title: "Save movie?"
+            .card-body
+              - if movie.ratings.present?
+                    - average_rating = movie.ratings.average(:rating)
+                    - filled_stars = average_rating.round(1).to_i
+                    - (filled_stars).times do
+                      = image_tag 'star.svg', class: 'star-icon'
+                    - (5 - filled_stars).times do
+                      = image_tag 'empty-star.svg', class: 'star-icon'
+              - else
+                - 5.times do
+                  = image_tag 'empty-star.svg', class: 'star-icon'
+              h5.card-title
+                = link_to movie.name, movie
+              p.card-text
+                = link_to movie.duration, movie
+  .row.mt-3
+    = paginate @movies, theme: 'bootstrap-5',
+    pagination_class: "flex-wrap justify-content-center",
+    nav_class: "d-inline-block"
+  .row.m-0.mt-5.pc-view
+  .sec-popular-movies.like-heading.pc-view.justify-content-between.align-items-center
+    h2 Popular Movies
+    div.d-flex.justify-content-end
+        button.previous(type="button" data-bs-target="#movieCarousel" data-bs-slide="prev")
+          span.carousel-control-prev-icon(aria-hidden="true")
+          span.visually-hidden Previous
+        button.next(type="button" data-bs-target="#movieCarousel" data-bs-slide="next")
+          span.carousel-control-next-icon(aria-hidden="true")
+          span.visually-hidden Next
+  .carousel.slide.pc-view#movieCarousel(data-ride="carousel")
+    .carousel-inner
+      - @movies_by_rating.each_slice(6).with_index do |movie_group, index|
+        .carousel-item(class=(index == 0 ? 'active' : ''))
+          .row
+            - movie_group.each do |movie|
+              - if movie.present? && movie.image.attached?
+                .col-sm-4.col-md-3.col-lg-2.col-4.mb-3
+                  = link_to movie do
+                    .home-card.card.border-0.bg-transparent.mt-1
+                      = image_tag url_for(movie.image), class: "card-img-top"
+                      .card-body
+                        - if movie.ratings.present?
+                          - average_rating = movie.ratings.average(:rating)
+                          - filled_stars = average_rating.round(1).to_i
+                          - (filled_stars).times do
+                            = image_tag 'star.svg', class: 'star-icon'
+                          - (5 - filled_stars).times do
+                            = image_tag 'empty-star.svg', class: 'star-icon'
+                        - else
+                          - 5.times do
+                            = image_tag 'empty-star.svg', class: 'star-icon'
+                        h5.card-title
+                          = link_to movie.name, movie
+                        p.card-text
+                          = link_to movie.duration, movie
+  .row.m-0.mt-5.ph-view
+  .sec-popular-movies.ph-view.like-heading.justify-content-between.align-items-center
+    h2 Popular Movies
+    div.d-flex.justify-content-end
+      div
+        button.previous(type="button" data-bs-target="#phmovieCarousel" data-bs-slide="prev")
+          span.carousel-control-prev-icon(aria-hidden="true")
+          span.visually-hidden Previous
+        button.next(type="button" data-bs-target="#phmovieCarousel" data-bs-slide="next")
+          span.carousel-control-next-icon(aria-hidden="true")
+          span.visually-hidden Next
+  .carousel.slide.ph-view#phmovieCarousel(data-ride="carousel")
+    .carousel-inner
+      - @movies_by_rating.each_slice(3).with_index do |movie_group, index|
+        .carousel-item(class=(index == 0 ? 'active' : ''))
+          .row
+            - movie_group.each do |movie|
+              - if movie.present? && movie.image.attached?
+                .col-sm-4.col-md-3.col-lg-2.col-4.mb-3
+                  = link_to movie do
+                    .home-card.card.border-0.bg-transparent.mt-1
+                      = image_tag url_for(movie.image), class: "card-img-top"
+                      .card-body
+                        - if movie.ratings.present?
+                          - average_rating = movie.ratings.average(:rating)
+                          - filled_stars = average_rating.round(1).to_i
+                          - (filled_stars).times do
+                            = image_tag 'star.svg', class: 'star-icon'
+                          - (5 - filled_stars).times do
+                            = image_tag 'empty-star.svg', class: 'star-icon'
+                        - else
+                          - 5.times do
+                            = image_tag 'empty-star.svg', class: 'star-icon'
+                        h5.card-title
+                          = link_to movie.name, movie
+                        p.card-text
+                          = link_to movie.duration, movie
+  /up_coming movie slider pc-view
+  -unless @upcoming_movies.nil? || @upcoming_movies.empty?
+    .d-flex.align-items-center
+        h2 Up Coming Releases
+        span= link_to "See More", up_coming_path, class: "text-light ms-3 more-btn"
+    .row.mt-5.pc-view
+      - @upcoming_movies.limit(6).each do |movie|
+        .col-md-3.col-lg-2.col-4.mb-3
+          = link_to movie do
+            .home-card.card.border-0.bg-transparent.mt-1.mb-3
+              = image_tag url_for(movie.image), class: "card-img-top" if movie.image.attached?
+              .card-body
+                - if movie.ratings.present?
+                      - average_rating = movie.ratings.average(:rating)
+                      - filled_stars = average_rating.round(1).to_i
+                      - (filled_stars).times do
+                        = image_tag 'star.svg', class: 'star-icon'
+                      - (5 - filled_stars).times do
+                        = image_tag 'empty-star.svg', class: 'star-icon'
+                - else
+                  - 5.times do
+                    = image_tag 'empty-star.svg', class: 'star-icon'
+                h5.card-title
+                  = link_to movie.name, movie
+                p.card-text
+                  = link_to movie.duration, movie
+    .row.mt-3.ph-view
+      - @upcoming_movies.limit(3).each do |movie|
+        .col-md-3.col-lg-2.col-4.mb-3
+          = link_to movie do
+            .home-card.card.border-0.bg-transparent.mt-1.mb-3
+              = image_tag url_for(movie.image), class: "card-img-top" if movie.image.attached?
+              .card-body
+                - if movie.ratings.present?
+                      - average_rating = movie.ratings.average(:rating)
+                      - filled_stars = average_rating.round(1).to_i
+                      - (filled_stars).times do
+                        = image_tag 'star.svg', class: 'star-icon'
+                      - (5 - filled_stars).times do
+                        = image_tag 'empty-star.svg', class: 'star-icon'
+                - else
+                  - 5.times do
+                    = image_tag 'empty-star.svg', class: 'star-icon'
+                h5.card-title
+                  = link_to movie.name, movie
+                p.card-text
+                  = link_to movie.duration, movie
+  /recently movie slider pc-view
+  - if current_user || (current_user && current_user.admin?)
+    - if @history_entries.any?
+      .row.m-0.mt-5.pc-view
+      .sec-popular-movies.like-heading.pc-view.justify-content-between.align-items-center
+        h2 Recently Viewed
+        = button_to 'Clear All', delete_all_histories_path,class:"clear-btn", method: :delete, data: { confirm: 'Are you sure?' }
+      - if @history_entries.size > 6
+        div.sec-popular-movies.like-heading.pc-view.justify-content-end.align-items-center
+          button.previous(type="button" data-bs-target="#viewedCarousel" data-bs-slide="prev")
+            span.carousel-control-prev-icon(aria-hidden="true")
+            span.visually-hidden Previous
+          button.next(type="button" data-bs-target="#viewedCarousel" data-bs-slide="next")
+            span.carousel-control-next-icon(aria-hidden="true")
+            span.visually-hidden Next
+      .carousel.slide.pc-view#viewedCarousel(data-ride="carousel")
+        .carousel-inner
+            - @history_entries.each_slice(6).with_index  do |movie_group, index|
+              .carousel-item(class=(index == 0 ? 'active' : ''))
+                .row
+                  - movie_group.each do |history|
+                    - if history.movie.image.present? && history.movie.image.attached?
+                      .col-sm-4.col-md-3.col-lg-2.col-4.mb-3
+                        = link_to history.movie do
+                          .home-card.card.border-0.bg-transparent.mt-1
+                            = image_tag url_for(history.movie.image), class: "card-img-top" if history.movie.image.attached?
+                            .card-body
+                              - if history.movie.ratings.present?
+                                - average_rating = history.movie.ratings.average(:rating)
+                                - filled_stars = average_rating.round(1).to_i
+                                - (filled_stars).times do
+                                  = image_tag 'star.svg', class: 'star-icon'
+                                - (5 - filled_stars).times do
+                                  = image_tag 'empty-star.svg', class: 'star-icon'
+                              - else
+                                - 5.times do
+                                  = image_tag 'empty-star.svg', class: 'star-icon'
+                              h5.card-title
+                                = link_to history.movie.name, history.movie
+                              p.card-text
+                                = link_to history.movie.duration, history.movie
+  /recently movie slider ph-view
+  - if current_user || (current_user && current_user.admin?)
+    - if @history_entries.any?
+      .row.m-0.mt-5.ph-view
+      .sec-popular-movies.like-heading.ph-view.justify-content-between.align-items-center
+        h2 Recently Viewed
+        = button_to 'Clear All', delete_all_histories_path,class:"clear-btn", method: :delete, data: { confirm: 'Are you sure?' }
+      - if @history_entries.size > 3
+        div.sec-popular-movies.like-heading.ph-view.justify-content-end.align-items-center
+          button.previous(type="button" data-bs-target="#phviewedCarousel" data-bs-slide="prev")
+            span.carousel-control-prev-icon(aria-hidden="true")
+            span.visually-hidden Previous
+          button.next(type="button" data-bs-target="#phviewedCarousel" data-bs-slide="next")
+            span.carousel-control-next-icon(aria-hidden="true")
+            span.visually-hidden Next
+      .carousel.slide.ph-view#phviewedCarousel(data-ride="carousel")
+        .carousel-inner
+          - @history_entries.each_slice(3).with_index  do |movie_group, index|
+            .carousel-item(class=(index == 0 ? 'active' : ''))
+              .row
+                - movie_group.each do |history|
+                  - if history.movie.image.present? && history.movie.image.attached?
+                    .col-sm-4.col-md-3.col-lg-2.col-4.mb-3
+                      = link_to history.movie do
+                        .home-card.card.border-0.bg-transparent.mt-1
+                          = image_tag url_for(history.movie.image), class: "card-img-top" if history.movie.image.attached?
+                          .card-body
+                            - if history.movie.ratings.present?
+                              - average_rating = history.movie.ratings.average(:rating)
+                              - filled_stars = average_rating.round(1).to_i
+                              - (filled_stars).times do
+                                = image_tag 'star.svg', class: 'star-icon'
+                              - (5 - filled_stars).times do
+                                = image_tag 'empty-star.svg', class: 'star-icon'
+                            - else
+                              - 5.times do
+                                = image_tag 'empty-star.svg', class: 'star-icon'
+                            h5.card-title
+                              = link_to history.movie.name, history.movie
+                            p.card-text
+                              = link_to history.movie.duration, history.movie
+
+javascript:
+  document.addEventListener('turbo:load', function() {
+     var carousels = document.querySelectorAll('#movieCarousel, #phmovieCarousel');
+    carousels.forEach(function(carousel) {
+      var carouselInstance = new bootstrap.Carousel(carousel, {
+        interval: 4000,
+        wrap: true
+      });
+
+      // Auto slide the carousel after the document is loaded
+      var carouselInterval = setInterval(function() {
+        carouselInstance.next();
+      }, 4000);
+    });
+  });
+

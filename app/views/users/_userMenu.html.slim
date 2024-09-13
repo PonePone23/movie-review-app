@@ -1,0 +1,36 @@
+/ This block is to include stylesheet
+- content_for :head do
+  = javascript_include_tag "import_file", as:"style"
+
+/ Section for search bar, import and export users
+.row
+    .col-lg-3.col-4
+      .row
+        .col-lg-3.col-12
+          h2 Users
+        .col-lg-6.col-12
+          .add-user.text-center
+            = image_tag('icn-user.png', alt: 'icn-user',class:"add-user-icn")
+            = link_to "Add New", new_registration_path , class: "add-new"
+    .col-lg-3.col-1
+    .col-lg-6.col-7
+      .row
+        .col-lg-6.col-12
+          div.search-btn
+            div.input-group
+              = form_tag search_users_path, method: "get" , class: "search-box" do
+                = search_field_tag :search, params[:search], placeholder: "Search User...", class: "form-control", style: "color: #fff;"
+                = button_tag type: "submit" do
+                  = image_tag('icn-search.svg', alt: 'Image Logo', class: 'input-group-append-icon')
+        .col-lg-3.col-6
+          .import.text-center
+            = form_tag import_users_path, multipart: true, id: "import-form" do
+              = image_tag('icn-import.png', alt: 'icn-import',class:"add-user-icn")
+              label.import-user for="file-input" Import
+              input type="file" name="file" id="file-input" style="display: none;" onchange="this.form.submit()"
+              label for="file-input" id="file-label" style="display: none;" No chosen file
+              = submit_tag "Import", style: "display: none;"
+        .col-lg-3.col-6
+          .export.text-center
+            = image_tag('icn-export.png', alt: 'icn-export',class:"add-user-icn")
+            = link_to "Export", export_users_path , class: "export-user"

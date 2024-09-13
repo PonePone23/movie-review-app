@@ -1,0 +1,13 @@
+// This is for including stylesheet
+- content_for :head do
+  = stylesheet_link_tag "user/show", as:"style"
+
+/ Section for showing user deatails(User Profile)
+div.sec-edit-user.mt-3
+  div.inner-width.container-fluid.pt-5
+    h2 User Profile
+    =render "form",  user: @user
+
+    .delete
+      = image_tag('img-delete-icon.png', alt: 'img-movie1',class:"delete-icon")
+      = link_to "Delete", user_path(@user), data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true  }

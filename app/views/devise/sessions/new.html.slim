@@ -1,0 +1,69 @@
+/ This block is used to include a stylesheet
+= content_for :head do
+  = stylesheet_link_tag "movie/form", as:"style"
+  = stylesheet_link_tag "devise/sign_up", as:"style"
+  = stylesheet_link_tag "devise/log_in", as:"style"
+
+/ Section for user log in
+div.sec-sign-up
+  div.inner-width.container-fluid.mt-5
+    .row
+      /.navbar-brand.d-flex.justify-content-center.align-items-center
+      /  .d-flex.justify-content-center.align-items-center.logo-brand
+      /    = link_to root_path do
+      /      = image_tag('logo.svg', alt: 'Image Logo',class: "logo-img")
+      /      = link_to "Cinova", root_path, class: "logo-ttl"
+      div.col-lg-3.col-0
+      div.col-lg-6.col-12
+        .border-form
+          h1.no-border-ttl Log In
+          div.form-sign-up.mt-3
+            = form_for(resource, as: resource_name, url: session_path(resource_name), html: { id: "loginForm" }) do |f|
+              = render "devise/shared/error_messages", resource: resource
+              div.form-group
+                div.field
+                  = f.label :email, "Email"
+                  br
+                  = f.email_field :email, placeholder: "Email", autofocus: true, autocomplete: "email" ,class: "form-control", id: "email"
+              br
+              div.form-group
+                div.field
+                  = f.label :password
+                  = f.password_field :password, placeholder: "Password", autocomplete: "new-password", class: "form-control", id: "password"
+              br
+              div.form-group.field.remember-me
+                = f.check_box :remember_me, {class: "form-check-input", id: "rememberMeCheckbox"}
+                = f.label :remember_me, "Remember me", class: "form-check-label", for: "rememberMeCheckbox"
+
+              div.actions.mt-4
+                = f.submit "Log In", class:"sign-up-btn btn btn-primary"
+
+          div.col-lg-3.col-0
+          div.d-flex.mt-3.justify-content-between
+            - if devise_mapping.registerable? && controller_name != 'registrations'
+              = link_to "Sign up", new_user_registration_path
+            - if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations'
+              = link_to "Forgot your password?", new_password_path(resource_name)
+
+      .col-lg-3.col-0
+
+javascript:
+  document.addEventListener('DOMContentLoaded', function() {
+    var rememberMeCheckbox = document.getElementById('rememberMeCheckbox');
+    var emailField = document.getElementById('email');
+
+    // Check if user data is stored and fill in the email field
+    if (rememberMeCheckbox && localStorage.getItem('rememberMeEmail')) {
+      emailField.value = localStorage.getItem('rememberMeEmail');
+      rememberMeCheckbox.checked = true;
+    }
+
+    // Save email if "Remember me" is checked
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+      if (rememberMeCheckbox.checked) {
+        localStorage.setItem('rememberMeEmail', emailField.value);
+      } else {
+        localStorage.removeItem('rememberMeEmail');
+      }
+    });
+  });

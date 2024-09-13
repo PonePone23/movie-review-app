@@ -1,0 +1,74 @@
+/ This block is to include stylesheet and javascript
+- content_for :head do
+  = stylesheet_link_tag "movie/form", as:"style"
+  = stylesheet_link_tag "user/form", as:"style"
+  = javascript_include_tag "preview_image_user", as:"script"
+
+/ Section for editing and existing user
+= form_with model: @user do |form|
+  div.sec-edit-user.mt-3
+    div.inner-width.container-fluid.pt-5
+      h2 Edit User
+      .row
+        div.sec-add-user.container
+          .sec-image-upload.mt-1
+            p.mt-5 UPLOAD A PROFILE PICTURE
+            .d-flex.align-items-center
+              - if @user.image.attached? && @user.persisted?
+                          - if @user.image.respond_to?(:id)
+                            - image_url = url_for(@user.image)
+                            = image_tag image_url, class: "admins-append-icon", id: "preview-image"
+              -else
+                = image_tag('icn-add-user.png', alt: 'icn-add-user',class:"icn-add-user",id:"preview-image")
+              div.form-group.sec-browse-image
+              label.add.btn for="image-input" Browse
+              = form.file_field :image, onchange: "previewImage(this)", id: "image-input", style: "display: none;"
+                = form.file_field :image, onchange: "previewImage(this)"
+
+          div.col-lg-6.col-12.mt-4
+            .row.g-3
+                div.col-12.form-group
+                  .d-flex
+                    = form.label :username, "Username"
+                    span.required-asterisk *
+                  = form.text_field :name, placeholder: "User Name", class: "form-control"
+                  - @user.errors.full_messages_for(:name).each do |message|
+                    div.error-message= message
+
+                div.col-12.form-group
+                  .d-flex
+                    = form.label :email, "Email"
+                    span.required-asterisk *
+                  = form.email_field :email,placeholder: "Email",class: "form-control"
+                  - @user.errors.full_messages_for(:email).each do |message|
+                    div.error-message= message
+
+                div.col-12.form-group
+                  = form.label :password
+                  i leave blank if you don't want to change it
+                  br
+                  = form.password_field :password, class: "form-control", placeholder: "New Password", autocomplete: "new-password"
+                  - @user.errors.full_messages_for(:password).each do |message|
+                    div.error-message= message
+                  - if @minimum_password_length
+                    em #{@minimum_password_length} characters minimum
+
+                div.col-12.form-group
+                  = form.label :password_confirmation
+                  br
+                  = form.password_field :password_confirmation, class: "form-control", placeholder: "New Password Again", autocomplete: "new-password"
+                  - @user.errors.full_messages_for(:password_confirmation).each do |message|
+                    div.error-message= message
+
+                div.col-12.form-group
+                  .d-flex
+                    = form.label :admin, 'Role', class: 'me-5'
+                    .span.me-2
+                      = form.radio_button :admin, false, checked: true
+                      = form.label :admin, 'User', class: 'ms-2'
+                    .span
+                      = form.radio_button :admin, true
+                      = form.label :admin, 'Admin', class: 'ms-2'
+                div.d-flex.justify-content-end
+                  = link_to "Cancel", users_path, class: "btn-cancel btn btn-secondary px-3"
+                  = form.submit "Publish", class: "btn btn-publish px-3"

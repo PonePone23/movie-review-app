@@ -1,0 +1,18 @@
+/ This block is to include stylesheet
+- content_for :head do
+  = stylesheet_link_tag "movie/form", as:"style"
+  = stylesheet_link_tag "year/form", as:"style"
+
+/ Section for creating and editing year
+.div.form-container.sec-movie-form
+  = form_with(model: @year) do |form|
+    .div.form-group
+      .d-flex
+        = form.label :year, "Released Year (Enter only the year e.g., 2000)"
+        span.required-asterisk *
+      = form.number_field :year, min: 2000, placeholder: "Release Year",class: "form-control"
+      - @year.errors.full_messages.each do |message|
+        div.error-message= message
+      .d-flex.justify-content-end.mt-3
+        = link_to "Cancel", years_path, class: "btn btn-secondary px-3 small-font"
+        = form.submit "Upload", class: "btn btn-update"

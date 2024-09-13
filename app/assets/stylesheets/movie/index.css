@@ -1,0 +1,496 @@
+/*CSS for search bar in home page*/
+.search {
+  min-height: 40vh;
+
+  p.search-txt {
+    margin-top: 30px;
+    padding: 30px;
+    background-color: #282B2D;
+    color: #f1f1f1;
+    font-size: 25px;
+    border-radius: 10px;
+  }
+
+  h3 {
+    padding: 10px 0px 10px 15px;
+    color: #fff;
+    font-size: 18px;
+  }
+}
+.clear-btn{
+  color: #3C81E8;
+  background: 0;
+  border: 0;
+  padding: 5px;
+}
+.clear-btn:hover{
+  background: #000;
+  border: 1px solid #000;
+
+}
+.button_to{
+  margin-block-end: 0;
+}
+.ph-view {
+  display: none;
+}
+
+.pc-view {
+  display: flex;
+}
+.carousel-item {
+  transition-duration: 1s;
+}
+
+/*CSS for home page*/
+.sec-home {
+
+  min-height: 30vh;
+  .no-movies {
+    margin-top: 30px;
+    padding: 30px;
+    background-color: #282B2D;
+    color: #f1f1f1;
+    font-size: 25px;
+    border-radius: 10px;
+  }
+
+  .bookmark {
+    width: 20px;
+    height: 20px;
+  }
+
+  .list-card.card {
+    background-color: #282B2D;
+  }
+
+  .list-card {
+    .card-title {
+      margin-top: 7px;
+    }
+  }
+
+  .bookmark-list {
+    width: 40px;
+    height: 40px;
+  }
+
+  .list-card-img {
+    width: 80px;
+    height: 125px;
+  }
+
+  .icon-g {
+    img {
+      width: 30px;
+      height: 30px;
+      border-radius: 0px;
+    }
+  }
+
+  .icon-l {
+    img {
+      width: 22px;
+      height: 22px;
+      border-radius: 0px;
+    }
+  }
+
+  .active-lg {
+    background-color: #124559;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .save-movie-list {
+    position: absolute;
+    top: 40px;
+    right: 30px;
+  }
+
+  .save-movie {
+    position: absolute;
+    top: 0px;
+    background-color: #000;
+  }
+
+  .more-btn {
+    display: flex;
+    align-items: center;
+    margin: 5px;
+    padding: 3px 10px 5px 10px;
+    border: none;
+    background-color: #124559;
+    color: #FFFFFF;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.5s;
+    border-radius: 4px;
+  }
+
+  .more-btn:after {
+    top: 0;
+    right: -20px;
+    margin-bottom: 2px;
+    font-size: 19px;
+    content: '\00bb';
+    transition: 0.5s;
+    opacity: 0;
+  }
+
+  .more-btn:hover::after {
+    right: 0;
+    padding-left: 5px;
+    opacity: 1;
+  }
+
+  .dropdown-menu {
+    --bs-dropdown-min-width: 7rem;
+    margin-top: 5px;
+    padding: 0;
+    background-color: #2A2D2F;
+    text-align: center;
+    border-radius: 10px;
+  }
+
+  .dropdown-item {
+    padding: 10px;
+    color: #ffffff;
+  }
+
+  .dropdown-item:hover {
+    color: #124559;
+    opacity: 0.8;
+    border-radius: 10px;
+  }
+
+  .dropdown-item.active {
+    background-color: #124559;
+    color: #ffffff;
+    border-radius: 10px;
+  }
+
+  .carousel-control-prev-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .carousel-control-next-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .sec-popular-movies {
+    .carousel-control-prev-icon {
+      width: 17px;
+      height: 14px;
+
+    }
+
+    .carousel-control-next-icon {
+      width: 17px;
+      height: 14px;
+    }
+  }
+
+  .carousel-inner {
+    margin: 20px 0px;
+  }
+
+  .previous {
+    padding: 5px;
+    margin: 0px 10px;
+    background-color: #124559;
+    border-radius: 5px;
+  }
+
+  .next {
+    padding: 5px;
+    background-color: #124559;
+    border-radius: 5px;
+  }
+
+  .star-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .card-link {
+    text-decoration: none;
+  }
+
+  .carousel-control-prev {
+    width: 3%;
+  }
+
+  .carousel-control-next {
+    width: 3%;
+  }
+
+  .genre-btn {
+    margin-right: 25px;
+    margin-left: 25px;
+  }
+
+  .genre-btn.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+  }
+
+  img {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+  }
+
+  h5 {
+    font-size: 20px;
+  }
+
+  .bookmark {
+    width: 20px;
+    height: 20px;
+  }
+
+  .save-movie {
+    position: absolute;
+    background-color: #000;
+  }
+}
+
+/*CSS for Movie Card*/
+.home-card {
+  position: relative;
+  /*height: 415px;*/
+  /*box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+  background-color: #000 !important;*/
+
+  .card-title a {
+    color: #3C81E8;
+  }
+
+  .card-text a {
+    color: #fff;
+  }
+
+  .card-body {
+    padding: 5px;
+  }
+}
+
+.home-card:hover {
+  transform: translateY(-5px) scale(1);
+  transition: linear .2s;
+  opacity: 0.7;
+}
+
+.list-card:hover {
+  transform: translateX(-5px) scale(1);
+  transition: linear .2s;
+}
+
+.home-card:hover .card-title,
+.home-card:hover .card-text {
+  color: #ffffff;
+}
+
+.home-btn {
+  padding: 10px 20px;
+  background-color: #2A2D2F;
+  color: #ffffff;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 30px;
+}
+
+.home-btn:hover {
+  opacity: 0.6;
+}
+
+.home-btn.active {
+  background-color: #124559;
+  color: #ffffff;
+}
+
+a.all-btn-active {
+  padding: 10px 20px;
+  background-color: #124559;
+  color: #ffffff;
+  border-radius: 30px;
+}
+
+p.search-movies {
+  margin-top: 30px;
+  padding: 30px;
+  background-color: #282B2D;
+  color: #f1f1f1;
+  font-size: 25px;
+  border-radius: 10px;
+}
+
+p.filter-ttl {
+  margin-top: 10px;
+  color: #fff;
+}
+
+.filter-btn {
+  margin-left: 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #124559;
+  color: white;
+  border-radius: 20px;
+}
+
+.filter-btn:active {
+  background-color: #124559;
+  transform: translateY(5px);
+}
+
+@media (max-width: 768.98px) {
+  .sec-home {
+
+    margin-top: 100px;
+    .no-movies {
+      font-size: 13px;
+    }
+
+    .ph-view {
+      display: flex;
+    }
+
+    .pc-view {
+      display: none;
+    }
+
+    .star-icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    img {
+      height: 170px;
+    }
+
+    .carousel-control-prev {
+      width: 8%;
+    }
+
+    .carousel-control-next {
+      width: 8%;
+    }
+  }
+
+  .home-card {
+    .card-body {
+      padding: 0 5px;
+    }
+  }
+
+  .all-btn-active {
+    font-size: 13px;
+  }
+
+  .home-btn {
+    margin-right: 3px;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .home-carousel {
+    margin-top: 24px;
+  }
+
+  .home-card {
+    height: 274px;
+
+    .card-title {
+      font-size: 15px;
+    }
+
+    .card-text {
+      font-size: 14px;
+    }
+  }
+
+  /*text size for phone*/
+  .small-font,
+  p.search-movies {
+    font-size: 13px;
+  }
+}
+
+/*CSS for responsive sp*/
+@media (max-width: 575.98px) {
+  .ph-view {
+    display: flex;
+  }
+  .pc-view {
+    display: none;
+  }
+  .sec-home {
+
+    margin-top: 100px;
+    .star-icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    img {
+      height: 170px;
+    }
+
+    .carousel-control-prev {
+      width: 8%;
+    }
+
+    .carousel-control-next {
+      width: 8%;
+    }
+  }
+
+  .home-card {
+    .card-body {
+      padding: 0 5px;
+    }
+  }
+
+  .all-btn-active {
+    font-size: 13px;
+  }
+
+  .home-btn {
+    margin-right: 3px;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .home-carousel {
+    margin-top: 24px;
+  }
+
+  .home-card {
+    height: 274px;
+
+    .card-title {
+      font-size: 15px;
+    }
+
+    .card-text {
+      font-size: 14px;
+    }
+  }
+
+  /*text size for phone*/
+  .small-font,
+  p.search-movies {
+    font-size: 13px;
+  }
+}

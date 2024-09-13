@@ -1,0 +1,40 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "movie/form"
+  = stylesheet_link_tag "devise/sign_up"
+  = stylesheet_link_tag "devise/log_in"
+
+/ Section for new pasword
+div.sec-sign-up
+    div.inner-width.container-fluid.mt-5
+      .row
+        /.navbar-brand.d-flex.justify-content-center.align-items-center
+        /  .d-flex.justify-content-center.align-items-center.logo-brand
+        /    = link_to root_path do
+        /      = image_tag('logo.svg', alt: 'Image Logo',class: "logo-img")
+        /      = link_to "Cinova", root_path, class: "logo-ttl"
+        .col-lg-3.col-0
+        .col-lg-6.col-12
+          .border-form
+            h2.no-border-ttl Forgot Your Password
+            div.form-sign-up.mt-3
+              = form_for(resource, as: resource_name, url: password_path(resource_name)) do |f|
+
+                div.form-group
+                  .field
+                  = f.label :email, "Email"
+                  = f.email_field :email, autofocus: true, autocomplete: "email" ,class: "form-control"
+                  - if resource.errors.has_key?(:email)
+                    div.text-danger= "Email " + resource.errors[:email].first
+                br
+                div.actions.mt-2
+                  = f.submit "Send me reset password instructions", class:"sign-up-btn btn btn-primary"
+                br
+                div.pt-2.d-flex.justify-content-between
+                  - if controller_name != 'sessions'
+                    = link_to "Log in", new_session_path(resource_name)
+
+                  - if devise_mapping.registerable? && controller_name != 'registrations'
+                    = link_to "Sign up", new_user_registration_path
+
+          .col-lg-3.col-0

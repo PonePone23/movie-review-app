@@ -1,0 +1,43 @@
+/ This block is for including stylesheet and javascript
+- content_for :head do
+  = stylesheet_link_tag "notification/index", as:"style"
+  = stylesheet_link_tag "discussion/index", as:"style"
+
+/ Container for discussions
+div.sec-noti.inner-width.container-fluid.sec-movie-form
+  div.mt-5.mb-3
+    h2 Discussions
+  div
+    - @discussions.each do |discussion|
+      - reaction_count = discussion.reactions.count
+      - reply_count = discussion.replies.count
+      div.notification.mt-3
+        .d-flex.justify-content-between
+          .d-flex
+            - if discussion.user.image.attached?
+              = image_tag url_for(discussion.user.image), class: "img-user-noti"
+            strong.noti-name = discussion.user.name
+          div.noti-time
+            | #{time_ago_in_words(discussion.created_at)} ago
+
+        .row.align-items-center
+          .col-lg-8.col-12
+            div
+              .noti-body = discussion.content
+          .col-lg-2.col-6
+            div.reaction-reply-info
+              = link_to discussion_path(discussion) do
+                .d-flex.justify-content-between.text-center
+                  div.reaction
+                    p #{reaction_count}
+                    p Reactions
+                  div
+                    p #{reply_count}
+                    p Replies
+          .col-lg-2.col-12.d-flex.justify-content-end
+            div
+              - if current_user == discussion.user || current_user.admin?
+                = link_to 'Delete', discussion_path(discussion), data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true }, class: "btn btn-sm noti-delete ml-2"
+  div.mt-3
+    / New Discussion button
+    = link_to 'New Discussion', new_discussion_path, class: 'btn btn-new'

@@ -1,0 +1,40 @@
+/*CSS for comment section in Movie Show Page*/
+.comment {
+  padding: 10px;
+  background-color: #2A2D2F;
+  border-radius: 10px;
+
+  p {
+    padding: 0px 10px;
+    color: #fff;
+  }
+
+  h6 {
+    padding: 0px 10px;
+    color: #fff;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .img-comment {
+    width: 30px;
+    height: 30px;
+  }
+
+  .approve-btn {
+    margin-left: 10px;
+    background-color: #124559;
+    color: #fff;
+  }
+
+  .btn-delete {
+    background-color: #124559;
+    color: #fff;
+  }
+
+  .create-time {
+    font-size: 10px;
+  }
+}

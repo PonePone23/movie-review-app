@@ -1,0 +1,48 @@
+/*CSS for comment form in Movie Show Page*/
+.sec-comment {
+  .btn-creview {
+    background-color: #124559;
+    color: #fff;
+  }
+
+  .text-danger {
+    margin-top: 5px;
+  }
+
+  .form-group {
+    color: #fff;
+
+    textarea {
+      background-color: #2A2D2F;
+      color: #2A2D2F;
+      resize: none;
+    }
+
+    .form-control {
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      background-color: #181616;
+      color: #fff;
+      border-radius: 5px;
+
+      &::placeholder {
+        color: #999;
+      }
+
+      &:focus {
+        box-shadow: none;
+        outline: none;
+        border-color: none;
+      }
+    }
+  }
+}
+
+@media (max-width:575.98px) {
+  .sec-comment {
+    .btn-creview {
+      font-size: 13px;
+    }
+  }
+}

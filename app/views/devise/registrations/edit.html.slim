@@ -1,0 +1,83 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "movie/form", as:"style"
+  = stylesheet_link_tag "devise/sign_up", as:"style"
+  = javascript_include_tag "preview_image_user", as:"scrit"
+
+/ Section for editing user information
+div.sec-sign-up
+    div.inner-width.container-fluid.mt-5
+      .row
+        .col-lg-3.col-0
+        .col-lg-6.col-12
+          h1.no-border-ttl #{resource_name.to_s.humanize} Profile
+          div.form-sign-up.mt-3
+            = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f|
+                  .text-center.edit-img
+                    - if @user.image.attached? && @user.persisted? &&  @user.image.attachment.blob.present? &&  @user.image.attachment.blob.persisted?
+                      - image_url = url_for(@user.image)
+                      = image_tag image_url, class: "admins-append-icon", id: "preview-image"
+                      = link_to delete_image_user_path(@user), method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true }, class: "delete-img",id: "delete-button", style: ("display: none;" unless @user.image.attached?) do
+                        i.fa.fa-trash
+                    - else
+                     = image_tag 'icn-add-user.png', alt: 'icn-add-user', class: 'icn-add-user', id: 'preview-image'
+                  div.form-group.sec-browse-image.mt-3.text-center
+                    label.add for="image-input" Browse New Image
+                    = f.file_field :image, onchange: "previewImage(this)", id: "image-input", style: "display: none;"
+
+                  div.field.form-group
+                    = f.label :name
+                    = f.text_field :name, class: "form-control", placeholder: "Name", autofocus: true, autocomplete: "name"
+                    - if resource.errors.has_key?(:name)
+                      div.text-danger= resource.errors[:name].first
+                  br
+
+                  div.field.form-group
+                    = f.label :email
+                    = f.email_field :email, class: "form-control", placeholder: "Email", autofocus: true, autocomplete: "email"
+                    - if resource.errors.has_key?(:email)
+                      div.text-danger= resource.errors[:email].first
+
+                  - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+                    div Currently waiting confirmation for: #{resource.unconfirmed_email}
+                  br
+
+                  div.field.form-group
+                    = f.label :password
+                    - if @minimum_password_length
+                      em #{@minimum_password_length} characters minimum
+                    i leave blank if you don't want to change it
+                    br
+                    = f.password_field :password, class: "form-control", placeholder: "New Password", autocomplete: "new-password"
+                    - if resource.errors.has_key?(:password)
+                      div.text-danger= resource.errors[:password].first
+                  br
+
+                  div.field.form-group
+                    = f.label :password_confirmation
+                    = f.password_field :password_confirmation, class: "form-control", placeholder: "New Password Again", autocomplete: "new-password"
+                    - if resource.errors.has_key?(:password_confirmation)
+                      div.text-danger= resource.errors[:password_confirmation].first
+                  br
+
+                  div.field.form-group
+                    = f.label :current_password
+                    i we need your current password to confirm your changes
+                    = f.password_field :current_password, class: "form-control", placeholder: "Current Password", autocomplete: "current-password"
+                    - if resource.errors.has_key?(:current_password)
+                      div.text-danger= resource.errors[:current_password].first
+                  br
+
+                  div.actions.d-flex.justify-content-between
+                    = link_to "Cancel", root_path, class: "btn btn-secondary"
+                    = f.submit "Update", class: "update-btn btn btn-primary"
+
+            -unless current_user.admin?
+              div.mt-3
+                h3.text-white Delete my account
+                div.mt-3.mb-3.d-flex.justify-content-between
+                = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :delete }) do |f|
+                  div.field.form-group
+                    = f.label :current_password
+                    = f.password_field :current_password, class: "form-control", placeholder: "Current Password", autocomplete: "current-password"
+                  = f.submit "Delete Account", class: "btn btn-danger mt-2"                

@@ -1,0 +1,16 @@
+/ Section footer
+div.sec-footer
+  div
+    div.inner-width.container-fluid.sec-footer-content
+      div.row
+        div.col-lg-6.col-md-6.col-sm-12.sec-ftr-right
+          div.py-3
+            div.d-flex.align-items-center
+              = link_to root_path
+                = image_tag('logo.svg', alt: 'Image Logo')
+                = link_to "Cinova", root_path, class: "logo-ttl text-white"
+          p This website introduces a user-friendly movie review website built using Ruby on Rails, aiming to provide an engaging space for movie enthusiasts. This project is to create a space where movie lovers can share their perspectives, engage in discussions, and discover new cinematic gems.
+          br
+
+        div.col-lg-6.col-md-6.col-sm-12.sec-ftr-feedback
+          = render 'feedbacks/form', feedback: @feedback

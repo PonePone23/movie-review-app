@@ -1,0 +1,30 @@
+- content_for :head do
+ = stylesheet_link_tag "genre/index", as:"style"
+
+/ Section for showig users' activity based in time
+div.sec-t-activity.mt-5
+  div.inner-width.container-fluid
+    h2 Activies for #{@period}
+
+    table.table.table-hover.mt-5.text-center.table-dark
+      thead
+        tr
+          th scope="col" User Name
+          th scope="col" Email
+          th scope="col" Activity
+          th scope="col" Time (Myanmar Time)
+      tbody
+        - @activities.each do |activity|
+          tr
+            td= activity.user.name
+            td= activity.user.email
+            td= activity.action.capitalize
+            td= activity.created_at.in_time_zone('Rangoon').strftime("%I:%M:%S %p %A, %B %d, %Y")
+    .row
+      = paginate @activities, theme: 'bootstrap-5',
+        pagination_class: "flex-wrap justify-content-center",
+        nav_class: "d-inline-block"
+    .back
+        = link_to 'Back', dashboard_users_path ,class:"btn back-btn"
+
+

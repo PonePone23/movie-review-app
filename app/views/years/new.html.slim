@@ -1,0 +1,10 @@
+/ This block is to include stylesheet
+- content_for :head do
+  = stylesheet_link_tag "year/form", as:"style"
+
+/ Section for adding year
+.container-fluid.mt-5
+    div.inner-width.define-height.mx-auto
+          .edit-year
+            h3.text-white Add New Released Year
+          =render "form" ,year: @year

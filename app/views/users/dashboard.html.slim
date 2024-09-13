@@ -1,0 +1,47 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "genre/index", as:"style"
+
+/ Section for admin's dashboard
+div.sec-t-activity.mt-5
+  div.inner-width.container-fluid
+    .d-flex.justify-content-between.align-items-center
+      h2 Admin Dashboard
+      .d-flex.justify-content-end.align-items-center
+        = link_to "Export", export_activities_path , class: "export-btn btn"
+        = link_to 'Delete All Activities', delete_all_activities_path, data: { turbo_method: :delete, turbo_confirm: "Are you sure?" , turbo: true }, class: 'btn btn-danger small-font'
+
+    .sec-filter.mt-3.row
+      .col-lg-3.col-12.margin-b
+        <!-- User filter -->
+        = form_tag filter_by_user_users_path, method: :get do
+          .d-flex
+            = select_tag :user_id, options_for_select([["All",""]]+User.non_admin_users.map { |user| [user.name, user.id] }),class: "form-select", style: "margin-right:10px;"
+            = submit_tag "Filter by User", style:"background-color:#124559; color: #ffffff; border:none; border-radius: 5px; padding: 0px 10px;"
+      .col-lg-3.col-12
+        <!-- Time filter -->
+        = form_tag filter_by_time_users_path, method: :get do
+          .d-flex
+            = select_tag :time_period, options_for_select(["All","Today", "This Week", "This Month"]),class: "form-select", style: "margin-right:10px; "
+            = submit_tag "Filter by Time", style:"background-color:#124559; color: #ffffff; border:none; border-radius: 5px; padding: 0px 10px;"
+
+    table.table.table-hover.mt-5.text-center.table-dark
+      thead
+        tr
+          th scope="col" User Name
+          th scope="col" Email
+          th scope="col" Activity
+          th scope="col" Time (Myanmar Time)
+
+      tbody
+        - @activities.each do |activity|
+          tr
+            td= activity.user.name
+            td= activity.user.email
+            td= activity.action.capitalize
+            td= activity.created_at.in_time_zone('Rangoon').strftime("%I:%M:%S %p %A, %B %d, %Y")
+
+    .row
+      = paginate @activities, theme: 'bootstrap-5',
+        pagination_class: "flex-wrap justify-content-center",
+        nav_class: "d-inline-block"

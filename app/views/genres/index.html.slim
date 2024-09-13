@@ -1,0 +1,87 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "genre/index", as:"style"
+
+/ Section for showing list of genres
+div.sec-genre.mt-5
+  div.inner-width.container-fluid
+    .row.d-flex.justify-content-center.align-items-center
+      - if current_user && current_user.admin?
+        .col-lg-3.col-4
+          .row
+            .col-lg-3.col-12
+                div.d-flex.genre-ttl
+                  h2 Genres
+            .col-lg-7.col-12
+              div.add-btn
+                = image_tag('icn-add.png', alt: 'img create',class:"icon")
+                = link_to "Add genre",new_genre_path
+        .col-lg-3.col-1
+        .col-lg-6.col-7
+          .row
+            .col-lg-6.d-flex.justify-content-lg-end.col-sm-12
+              div.search-container
+                = form_tag search_genres_path, method: "get" , class: "search-box" do
+                  = search_field_tag :search, params[:search], placeholder: "Search genre..."
+                  = button_tag type: "submit" do
+                    = image_tag('icn-search.svg', alt: 'img-movie1',class:"search-icon")
+            .col-lg-3.col-6
+              .import.text-center
+                = form_tag import_genres_path, multipart: true, id: "import-form" do
+                  = image_tag('icn-import.png', alt: 'icn-import',class:"add-user-icn")
+                  label.import-user for="file-input" Import
+                  input type="file" name="file" id="file-input" style="display: none;" onchange="this.form.submit()"
+                  label for="file-input" id="file-label" style="display: none;" No chosen file
+                  = submit_tag "Import", style: "display: none;"
+            .col-lg-3.col-6
+              .export.text-center
+                = image_tag('icn-export.png', alt: 'icn-export',class:"add-user-icn")
+                = link_to "Export", export_genres_path , class: "export-user"
+
+      - else
+        .col-lg-3.col-sm-12
+          div.d-flex.genre-ttl
+            h2 Genres
+        .col-lg-3.col-6
+        .col-lg-6.col-7.d-flex.justify-content-lg-end.col-sm-12.col-12
+          div.search-container
+            = form_tag(search_genres_path, method: "get")
+            = search_field_tag :search, params[:search], placeholder: "Search genre..."
+            = button_tag type: "submit" do
+              = image_tag('icn-search.svg', alt: 'img-movie1',class:"search-icon")
+
+    table.table.table-hover.mt-5.text-center.table-dark
+      thead
+        tr
+          th scope="col" NO
+          th scope="col" NAME
+          th scope="col" CREATED DATE
+          th scope="col" Movie Lists
+          - if current_user && current_user.admin?
+            th scope="col" ACTIONS
+        tbody
+          - count = (@genres.current_page - 1) * @genres.limit_value + 1
+          - @genres.each do |genre|
+            tr
+              td = count
+              td = genre.name
+              td = genre.created_at.strftime("%Y-%m-%d")
+              td
+                .btn-container
+                  .show-movie-list
+                    = link_to "Movies List",  movies_by_genre_path(genre_id: genre.id)
+              - if current_user && current_user.admin?
+                td
+                  .btn-container
+                    .edit
+                      = image_tag('img-edit-icon.png', alt: 'img-movie1', class: "edit-icon")
+                      = link_to "Edit", edit_genre_path(genre)
+                    .delete
+                      = image_tag('img-delete-icon.png', alt: 'img-movie1', class: "delete-icon")
+                      = link_to "Delete", genre_path(genre), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" , turbo: true }
+            - count += 1
+
+    .row.mt-5
+      = paginate @genres, theme: 'bootstrap-5',
+        pagination_class: "flex-wrap justify-content-center",
+        nav_class: "d-inline-block"

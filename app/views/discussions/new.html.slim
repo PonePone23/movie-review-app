@@ -1,0 +1,29 @@
+- content_for :head do
+  = stylesheet_link_tag "movie/form", as:"style"
+
+/ Container for adding discussion
+div.mt-3
+  div.inner-width.container-fluid.pt-5
+    .row.sec-movie-form
+      .col-lg-3
+      .col-lg-6
+        h2 Add Discussion
+
+        div.mt-2
+          = form_with(model: @discussion, local: true) do |form|
+            br
+            .form-group
+              .field
+                = form.label :user_name, "Your Name"
+                = form.text_field :user_name, value: current_user.name, class: "form-control", readonly: true
+            br
+            .form-group
+              .field
+                = form.label :content
+                = form.text_area :content, class: "form-control", style: "resize: none;"
+                - @discussion.errors.full_messages.each do |message|
+                  div.error-message= message
+
+            .actions
+              = form.submit "Publish", class: "btn btn-publish mt-2"
+      .col-lg-3

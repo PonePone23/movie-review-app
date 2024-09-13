@@ -1,0 +1,82 @@
+/ This block is to include styelsheet
+- content_for :head do
+  = stylesheet_link_tag "year/index", as:"style"
+  = stylesheet_link_tag "year/search", as:"style"
+
+/ Section for showing year search results
+div.sec-year.mt-5
+  div.inner-width.container-fluid
+    .row.d-flex.justify-content-center.align-items-center
+      - if current_user && current_user.admin?
+        .col-lg-3.col-5
+          .row
+            .col-lg-3.col-12
+                  h2 Year
+            .col-lg-7.col-12
+              div.add-btn.d-flex.align-items-center.justify-content-center
+                = image_tag('icn-add.png', alt: 'img create',class:"icon")
+                = link_to "Add Year",new_year_path
+        .col-lg-3.col-1
+        .col-lg-6.col-6
+          .row
+            .col-lg-6.d-flex.justify-content-lg-end.col-sm-12
+              div.search-container
+                div.input-group
+                  = form_tag(search_years_path, method: "get")
+                    = search_field_tag :search, params[:search], placeholder: "Search year..."
+                    = button_tag type: "submit" do
+                      = image_tag('icn-search.svg', alt: 'img-movie1',class:"search-icon")
+            .col-lg-3.col-6
+              .import.text-center
+                = form_tag import_years_path, multipart: true, id: "import-form" do
+                  = image_tag('icn-import.png', alt: 'icn-import',class:"add-user-icn")
+                  label.import-user for="file-input" Import
+                  input type="file" name="file" id="file-input" style="display: none;" onchange="this.form.submit()"
+                  label for="file-input" id="file-label" style="display: none;" No chosen file
+                  = submit_tag "Import", style: "display: none;"
+            .col-lg-3.col-6
+              .export.text-center
+                = image_tag('icn-export.png', alt: 'icn-export',class:"add-user-icn")
+                = link_to "Export", export_years_path , class: "export-user"
+
+      - else
+        .col-lg-3.col-sm-12
+          div.d-flex.genre-ttl
+            h2 Year
+        .col-lg-3.col-6
+        .col-lg-6.col-7.d-flex.justify-content-lg-end.col-sm-12.col-12
+          div.search-container
+            = form_tag(search_years_path, method: "get")
+            = search_field_tag :search, params[:search], placeholder: "Search year..."
+            = button_tag type: "submit" do
+              = image_tag('icn-search.svg', alt: 'img-movie1',class:"search-icon")
+
+    div.search-year
+      - if @results.present?
+          table.table.table-hover.mt-5.text-center.table-dark
+            thead
+              tr
+                th scope="col" NO
+                th scope="col" NAME
+                th scope="col" Movie Lists
+                - if current_user && current_user.admin?
+                  th scope="col" ACTIONS
+            tbody
+              - count = 0
+              - @results.each do |result|
+                tr
+                  td  = count+=1
+                  td  = result.year
+                  td
+                      =link_to "Movies List" , year_path(result)
+                  - if current_user && current_user.admin?
+                    td
+                      div.btn-container
+                      .edit
+                        = image_tag('img-edit-icon.png', alt: 'img-movie1',class:"edit-icon")
+                        = link_to "Edit",edit_year_path(result)
+                      .delete
+                        = image_tag('img-delete-icon.png', alt: 'img-movie1',class:"delete-icon")
+                        = link_to "Delete", year_path(result), data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true  }
+      - else
+          p No results found.

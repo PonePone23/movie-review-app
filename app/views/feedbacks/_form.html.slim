@@ -1,0 +1,49 @@
+/ This block is used to include a stylesheet and javascript
+= javascript_include_tag 'feedback', as:"script"
+style
+ | .sec-feedback{
+ | .form-group {
+ | .form-control{
+ |   background-color:#ffff;
+ | }
+ |}
+ |}
+
+/ Section for new feedback
+.d-flex.align-items-center.mb-2
+  #loading-spinner(style="display: none;")
+    = image_tag 'loading-circle.gif', class:"loading-circle"
+  h3.text-warning.m-0#feedback_notice
+
+h4 Send feedback
+= form_with(model: @feedback, id: 'new_feedback', remote: true, data: {turbo: true, turbo_stream: true }) do |form|
+  .sec-feedback
+    .form-group
+      .field
+        .d-flex
+          = form.label :name
+          span.required-asterisk *
+        = form.text_field :name, class: "form-control"
+        #name-error.text-danger
+    br
+
+    .form-group
+      .field
+        d.flex
+          = form.label :email
+          span.required-asterisk *
+        = form.email_field :email, class: "form-control"
+        #email-error.text-danger
+    br
+
+    .form-group
+      .field
+        d.flex
+          = form.label :message
+          span.required-asterisk *
+        = form.text_area :message, class: "form-control"
+        #message-error.text-danger
+    br
+
+    .actions
+      = form.submit 'Submit Feedback', class: "feedback-btn btn"

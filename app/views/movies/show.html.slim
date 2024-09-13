@@ -1,0 +1,274 @@
+/ This block is to include stylesheet and javascript
+- content_for :head do
+  = stylesheet_link_tag "movie/index", as:"style"
+  = stylesheet_link_tag "movie/show", as:"style"
+  = stylesheet_link_tag "movie/shownew", as:"style"
+= javascript_include_tag "modalbox", as:"script"
+= javascript_include_tag "open_rating", as:"script"
+
+/ Section for showing movie
+.inner-width.container-fluid.p-0.show
+    .show-new
+      .row.p-0.m-0
+        .col-lg-2.col-12.p-0
+          - if current_user
+            .show-img
+              = image_tag url_for(@movie.image) if @movie.image.attached?
+          - else
+            .show-img-visitor
+              = image_tag url_for(@movie.image) if @movie.image.attached?
+        .col-lg-10.col-12.p-0
+          .show-content
+                  .row
+                      div.d-flex.j-content
+                        - if current_user && current_user.admin?
+                            .edit
+                              = image_tag('img-edit-icon.png', alt: 'img-movie1', class: "edit-icon")
+                              = link_to "Edit", edit_movie_path(@movie)
+                            .delete
+                              = image_tag('img-delete-icon.png', alt: 'img-movie1', class: "delete-icon")
+                              = link_to "Delete", movie_path(@movie),
+                              data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true  }
+                  .row.mt-add
+                    div.d-flex.justify-content-between.align-items-center
+                      h1.m-0 = @movie.name
+
+                  div.d-flex.mt-4
+                    .star
+                        - if @movie.ratings.present?
+                          - average_rating = @movie.ratings.average(:rating)
+                          - filled_stars = average_rating.round(1).to_i
+                          - (filled_stars).times do
+                            = image_tag 'star.svg', class: 'star-icon'
+                          - (5 - filled_stars).times do
+                            = image_tag 'empty-star.svg', class: 'star-icon'
+                        - else
+                          - 5.times do
+                            = image_tag 'empty-star.svg', class: 'star-icon'
+                    div
+                        - if @movie.ratings.present?
+                          - total_ratings = @movie.ratings.count
+                          - average_rating = @movie.ratings.average(:rating)
+                          p.rate = "( &nbsp;#{average_rating}  &nbsp;&nbsp;/&nbsp;&nbsp; #{total_ratings} votes &nbsp;)".html_safe
+                        - else
+                          p.text-white
+                            | ( No Rating Yet )
+
+                  div.mt-1.d-flex
+                    .watch-trailer
+                       span.mx-1 &#128250;
+                       = link_to "Watch Trailer", @movie.trailer_url, class: "btn-download", target: "_blank"
+                    - if current_user || (current_user && current_user.admin?)
+                     span.col-pipe |
+                     .save-fav
+                       - if current_user || (current_user && current_user.admin?)
+                        - if current_user && current_user.saved_movies.map(&:movie_id).include?(@movie.id)
+                            = link_to({ action: :unsave, id: @movie.id }, method: :post) do
+                              = image_tag 'saved_bookmark.svg', class: "bookmark",title: "Unsave movie?"
+                              span.text-style Unsave Movie
+                        - else
+                            = link_to({ action: :save, id: @movie.id }, method: :post) do
+                              = image_tag 'unsaved_bookmark.svg', class: "bookmark",title: "Save movie?"
+                              span.text-style Save Movie
+                    span.col-pipe |
+                    .duration
+                      span &#9200;
+                      span.text-duration = @movie.duration
+
+                  div.share.d-flex
+                    - current_url = request.original_url
+                    div.d-flex.f-share-btn.align-items-center
+                      = image_tag 'facebook.svg'
+                      a href="https://www.facebook.com/sharer/sharer.php?u=#{current_url}" target="_blank" Facebook
+                    div.d-flex.i-share-btn.align-items-center
+                      = image_tag 'pinterest.svg'
+                      a href="https://www.pinterest.com/pin/create/button/?url=#{current_url}" data-pin-do="buttonBookmark" target="_blank" Pinterest
+                    div.d-flex.t-share-btn.align-items-center
+                      = image_tag 'twitter.svg'
+                      a href="https://twitter.com/intent/tweet?url=#{current_url}" target="_blank" Twitter
+                  p.text-white.pt-3.text-justify = @movie.review
+      .row.p-0.m-0.mt-4
+        .col-lg-6.col-12.p-0.pb-5
+          div.m-attr-field.margin-r
+            h5.my-4.text-white.px-2 Genre(s):
+            div.d-flex.flex-wrap
+             - @movie.genres.each_with_index do |genre, index|
+                  p.px-2 = link_to genre.name, movies_by_genre_path(genre_id: genre.id), class: "g-link"
+        .col-lg-6.col-12.p-0.pb-5
+          div.m-attr-field.margin-l
+            h5.my-4.text-white.px-2 Casts:
+            div.d-flex.flex-wrap
+             - @movie.casts.split(',').each do |cast|
+                p.px-2 = link_to cast.strip, find_cast_relate_movie_movies_path(cast: cast.strip, movie_id: @movie.id), method: :post, class: "cast-link", data: { title: "Click to find related movies of the cast." }
+      .row.p-0.m-0
+        .col-lg-6.col-12.p-0.pb-5
+          div.m-attr-field.margin-r
+            h5.my-4.text-white.px-2 Release Date:
+            span.px-2 = @movie.release_date
+        .col-lg-6.col-12.p-0.pb-5
+          div.m-attr-field.margin-l
+            h5.my-4.text-white.px-2 Production
+            span.px-2 = @movie.production
+      .row.p-0.m-0
+        .col-lg-6.col-12.p-0
+          div.m-attr-field.margin-r.last-margin-c.pb-5
+            h5.my-4.text-white.px-2 Country:
+            span.px-2 = @movie.country
+        .col-lg-6.col-12.p-0
+          div.m-attr-field.margin-l.last-margin-d.pb-5
+            h5.my-4.text-white.px-2 Director(s):
+            - @movie.director.split(',').each do |director|
+                span.px-2 = link_to director.strip, find_director_relate_movie_movies_path(director: director.strip, movie_id: @movie.id), method: :post, class: "cast-link", data: { title: "Click to find related movies of the director." }
+
+    .row.m-0.mt-5.mb-5
+      div.d-flex.justify-content-between
+        - if current_user && @movie.release_date <= Date.today
+          h2 Users Reviews
+          .d-flex.justify-content-between
+            button.btn-review#openModalButton Add Review
+            button.btn-rating#openRatingModalButton Add Rating
+      div.p-l-r
+        - if @comments.present?
+            - @comments.each do |comment|
+              = render comment
+
+        - if @comments.present?
+            .row.mt-3
+              = paginate @comments, theme: 'bootstrap-5',
+                                    pagination_class: "flex-wrap justify-content-center",
+                                    nav_class: "d-inline-block"
+      - if current_user.present?
+        div
+          #myModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"]
+            .modal-dialog
+              .modal-content
+                .modal-header
+                  h5.modal-title Add Review
+                  button.close.btn.btn-close type="button" data-dismiss="modal" aria-label="Close"
+                .modal-body
+                  = render "comments/form", movie: @movie, user: current_user
+
+      - if current_user.present?
+          #ratingModal.modal.fade[tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"]
+            .modal-dialog
+              .modal-content
+                .modal-header
+                  h5.modal-title Add Rating
+                  button.close.btn.btn-close type="button" data-bs-dismiss="modal" aria-label="Close"
+                .modal-body
+                  = render "ratings/form" ,  movie: @movie
+    .row.m-0.mt-5.pc-view
+      .like-heading.d-flex.justify-content-between
+        h2 You may also like
+        div.d-flex.justify-content-end
+            button.previous type="button" data-bs-target="#movieCarousel" data-bs-slide="prev"
+              span.carousel-control-prev-icon aria-hidden="true"
+              span.visually-hidden Previous
+
+            button.next type="button" data-bs-target="#movieCarousel" data-bs-slide="next"
+              span.carousel-control-next-icon aria-hidden="true"
+              span.visually-hidden Next
+      .carousel.pc-view.slide(data-ride="carousel" id="movieCarousel")
+        - movies = []
+        - @movie.genres.each do |genre|
+          - movies += genre.movies
+        .carousel-inner.sec-home
+          - movies.reject { |m| m.id == @movie.id }.each_slice(6).with_index do |movie_group, index|
+            .carousel-item(class=(index == 0 ? 'active' : ''))
+              .row
+                - movie_group.each do |movie|
+                  .col-sm-4.col-md-3.col-lg-2.col-4.mb-3
+                    = link_to movie do
+                      .home-card.card.border-0.bg-transparent.mt-1
+                        = image_tag url_for(movie.image), class: "card-img-top" if movie.image.attached?
+                        - if current_user || (current_user && current_user.admin?)
+                            .save-movie-genre
+                              - if current_user && current_user.saved_movies.map(&:movie_id).include?(movie.id)
+                                  = link_to({ action: :unsave, id: movie.id }, method: :post) do
+                                    = image_tag 'saved_bookmark.svg', class: "bookmark", title: "Unsave movie?"
+                              - else
+                                  = link_to({ action: :save, id: movie.id }, method: :post) do
+                                    = image_tag 'unsaved_bookmark.svg', class: "bookmark", title: "Save movie?"
+                        .card-body
+                          - if movie.ratings.present?
+                                - average_rating = movie.ratings.average(:rating)
+                                - filled_stars = average_rating.round(1).to_i
+                                - (filled_stars).times do
+                                  = image_tag 'star.svg', class: 'star-icon'
+                                - (5 - filled_stars).times do
+                                  = image_tag 'empty-star.svg', class: 'star-icon'
+                          - else
+                            - 5.times do
+                              = image_tag 'empty-star.svg', class: 'star-icon'
+                          h5.card-title
+                            = link_to movie.name, movie
+                          p.card-text
+                            = link_to movie.duration, movie
+
+    .row.m-0.mt-5.ph-view
+      .like-heading.d-flex.justify-content-between
+        h2 You may also like
+        div.d-flex.justify-content-end
+            button.previous type="button" data-bs-target="#phmovieCarousel" data-bs-slide="prev"
+              span.carousel-control-prev-icon aria-hidden="true"
+              span.visually-hidden Previous
+
+            button.next type="button" data-bs-target="#phmovieCarousel" data-bs-slide="next"
+              span.carousel-control-next-icon aria-hidden="true"
+              span.visually-hidden Next
+      .carousel.slide(data-ride="carousel" id="phmovieCarousel")
+        - movies = []
+        - @movie.genres.each do |genre|
+          - movies += genre.movies
+        .carousel-inner.sec-home
+          - movies.reject { |m| m.id == @movie.id }.each_slice(3).with_index do |movie_group, index|
+            .carousel-item(class=(index == 0 ? 'active' : ''))
+              .row
+                - movie_group.each do |movie|
+                  .col-sm-4.col-md-3.col-lg-2.col-4.mb-3
+                    = link_to movie do
+                      .home-card.card.border-0.bg-transparent.mt-1
+                        = image_tag url_for(movie.image), class: "card-img-top" if movie.image.attached?
+                        - if current_user || (current_user && current_user.admin?)
+                            .save-movie-genre
+                              - if current_user && current_user.saved_movies.map(&:movie_id).include?(movie.id)
+                                  = link_to({ action: :unsave, id: movie.id }, method: :post) do
+                                    = image_tag 'saved_bookmark.svg', class: "bookmark", title: "Unsave movie?"
+                              - else
+                                  = link_to({ action: :save, id: movie.id }, method: :post) do
+                                    = image_tag 'unsaved_bookmark.svg', class: "bookmark", title: "Save movie?"
+                        .card-body
+                          - if movie.ratings.present?
+                                - average_rating = movie.ratings.average(:rating)
+                                - filled_stars = average_rating.round(1).to_i
+                                - (filled_stars).times do
+                                  = image_tag 'star.svg', class: 'star-icon'
+                                - (5 - filled_stars).times do
+                                  = image_tag 'empty-star.svg', class: 'star-icon'
+                          - else
+                            - 5.times do
+                              = image_tag 'empty-star.svg', class: 'star-icon'
+                          h5.card-title
+                            = link_to movie.name, movie
+                          p.card-text
+                            = link_to movie.duration, movie
+javascript:
+  document.addEventListener('turbo:load', function() {
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl);
+    });
+
+    var carousels = document.querySelectorAll('#movieCarousel, #phmovieCarousel');
+    carousels.forEach(function(carousel) {
+      var carouselInstance = new bootstrap.Carousel(carousel, {
+        interval: 4000
+      });
+
+      // Auto slide the carousel after the document is loaded
+      var carouselInterval = setInterval(function() {
+        carouselInstance.next();
+      }, 4000);
+    });
+  });
+

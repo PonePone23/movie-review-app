@@ -1,0 +1,47 @@
+/ This block is used to include a stylesheet for the comments index page in the head section of the HTML document.
+- content_for :head do
+  = stylesheet_link_tag "comment/index" , as:"style"
+
+.comment-session.mt-3.p-0
+  - if current_user && current_user.admin?
+     .comment
+      .d-flex.justify-content-between.align-items-center
+          .d-flex.align-items-center
+            = image_tag url_for(comment.user.image),class: 'img-comment' if comment.user.image.attached?
+            h6= comment.user.name
+            - total_rating = Rating.max_rating_for_user(comment.user,comment.movie)
+            - filled_stars = total_rating
+            - (filled_stars).times do
+              = image_tag 'star.svg', class: 'star-icon'
+            - (5 - filled_stars).times do
+              = image_tag 'empty-star.svg', class: 'star-icon'
+          p.create-time #{time_ago_in_words(comment.created_at)} ago
+      p= comment.description
+      .d-flex
+       = link_to "Delete Review", movie_user_comment_path(@movie, comment.user, comment), class: "btn btn-delete", method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo:true }
+       - if comment.status == false && comment.user.admin == false
+         = button_to 'Approve', approve_movie_user_comment_path(@movie, comment.user, comment), method: :put, class: "btn approve-btn", remote: true, data: { confirm: 'Are you sure?', turbo:true}
+
+  / If the comment is approved and not awaiting approval, display the comment details along with the option to delete it (if the current user is the author).
+  - elsif comment.status?
+    .comment
+      .d-flex.justify-content-between
+        .d-flex.align-items-center
+          = image_tag url_for(comment.user.image),class: 'img-comment' if comment.user.image.attached?
+          h6= comment.user.name
+          - total_rating = Rating.max_rating_for_user(comment.user,comment.movie)
+          - filled_stars = total_rating
+          - (filled_stars).times do
+            = image_tag 'star.svg', class: 'star-icon'
+          - (5 - filled_stars).times do
+            = image_tag 'empty-star.svg', class: 'star-icon'
+        p.create-time #{time_ago_in_words(comment.created_at)} ago
+
+      p= comment.description
+      - if current_user && comment.user == current_user
+        = link_to "Delete Review", movie_user_comment_path(@movie, comment.user, comment),class: "btn btn-delete", method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo:true}
+  - else
+    - if comment.user == current_user
+      .comment
+      .comment
+        | Your comment is pending approval...

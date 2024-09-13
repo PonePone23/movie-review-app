@@ -1,0 +1,15 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "comment/form", as:"style"
+
+div.sec-comment
+  .form-group.mt-3
+    div#comment_form.comment-form
+      = form_with(model: [movie, user, movie.comments.build], url: movie_user_comments_path(movie, user), local: true,
+       data: { turbo: true, turbo_stream: true}) do |form|
+        p.text-white Review about this movie!
+        = form.text_area :description, class: "form-control", rows: 10, id: "comment_description"
+        - if defined?(error_message) && error_message.present?
+          p.text-danger = error_message
+        p
+          = form.submit "Create Review", class: "btn btn-creview mt-3"

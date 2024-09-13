@@ -1,0 +1,115 @@
+.sec-add-user {
+  label.add {
+    margin-right: 10px;
+    background-color: #124559;
+    color: #fff;
+  }
+
+  .form-group {
+    color: #7D7D7D;
+
+    .form-control {
+      margin-top: 10px;
+      border: none;
+      background-color: #282B2D;
+      color: #fff;
+      border-radius: 5px;
+
+      &::placeholder {
+        color: #999;
+      }
+
+      &:focus {
+        box-shadow: none;
+        outline: none;
+        border-color: none;
+      }
+    }
+  }
+
+  .sec-browse-image {
+    margin-top: 10px;
+    padding-top: 30px;
+    padding-bottom: 50px;
+    border-radius: 5px;
+
+    .form-control {
+      border: none;
+      background-color: transparent;
+    }
+  }
+
+  .sec-image-upload {
+    .form-control {
+      border: none;
+    }
+
+    p {
+      color: #7d7d7d;
+    }
+
+    .form-group {
+      padding: 10px;
+    }
+
+    input[type]::-webkit-file-upload-button {
+      visibility: hidden;
+    }
+
+    input[type="file"]::before {
+      display: inline-block;
+      padding: 7px;
+      background-color: #404040;
+      content: 'Browse';
+      border-radius: 10px;
+    }
+  }
+
+  .required-asterisk {
+    margin-left: 5px;
+    color: #842727;
+  }
+
+  a.btn-cancel {
+    margin-right: 15px;
+  }
+
+}
+
+.icn-add-user,
+#preview-image.admins-append-icon {
+  width: 150px;
+}
+
+#file-input+label {
+  display: none;
+}
+
+.btn-publish {
+  background-color: #124559;
+  color: #fff;
+}
+
+.btn-publish:hover {
+  background-color: #124559;
+  color: #fff;
+}
+
+.btn:first-child:active {
+  background-color: #124559;
+}
+
+@media(max-width: 575.98px) {
+
+  .adjust-img,
+  #preview-image.admins-append-icon,
+  .icn-add-user {
+    width: 20%;
+  }
+
+  input[type="file"]::before,
+  .btn {
+    font-size: 13px;
+  }
+
+}

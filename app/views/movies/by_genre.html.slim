@@ -1,0 +1,126 @@
+/ This block is for including stylesheet
+- content_for :head do
+  = stylesheet_link_tag "movie/index", as:"style"
+  = javascript_include_tag 'filter', as:"script"
+
+/ Shows list of movies related to genres
+div.inner-width.container-fluid.mt-5.sec-home
+  .row.mt-5.mb-3.justify-content-between
+    .col-lg-1.col-3
+      h2 Movies
+    .col-lg-3.col-9
+      .d-flex.align-items-center.justify-content-end
+        p.filter-ttl Filter by :
+        .dropdown
+          button#dropdownMenuButton.small-font.filter-btn.dropdown-toggle(type="button" data-bs-toggle="dropdown" aria-expanded="false")
+            |
+          ul.dropdown-menu(aria-labelledby="dropdownMenuButton")
+              li
+                button#GenreModel.small-font.dropdown-item(type="button") Genre
+              li
+                button#YearModel.small-font.dropdown-item(type="button") Year
+
+
+  #genreCarousel.home-carousel.carousel.slide(data-bs-interval="false")
+    button.carousel-control-prev(type="button" data-bs-target="#genreCarousel" data-bs-slide="prev")
+      span.carousel-control-prev-icon(aria-hidden="true")
+      span.visually-hidden Previous
+    button.carousel-control-next(type="button" data-bs-target="#genreCarousel" data-bs-slide="next")
+      span.carousel-control-next-icon(aria-hidden="true")
+      span.visually-hidden Next
+    .carousel-inner.mt-3
+      - active_index = @genres.each_slice(4).find_index { |genre_group| genre_group.include?(@genre) }
+      - @genres.each_slice(4).with_index do |genre_group, i|
+        - active_class = (i == active_index ? 'active' : '')
+        .carousel-item(class=active_class)
+          .link-container.d-flex.justify-content-evenly.genre-btn
+            = link_to "All", root_path, class: "home-btn"
+            - genre_group.each do |genre|
+              - genre_class = (genre == @genre ? 'active' : '')
+              = link_to genre.name, movies_by_genre_path(genre_id: genre.id), class: "home-btn #{genre_class}"
+  #genre.home-carousel.carousel.slide(data-bs-interval="false")
+    button.carousel-control-prev(type="button" data-bs-target="#genre" data-bs-slide="prev")
+      span.carousel-control-prev-icon(aria-hidden="true")
+      span.visually-hidden Previous
+    button.carousel-control-next(type="button" data-bs-target="#genre" data-bs-slide="next")
+      span.carousel-control-next-icon(aria-hidden="true")
+      span.visually-hidden Next
+    .carousel-inner.mt-3
+      - active_index = @genres.each_slice(2).find_index { |genre_group| genre_group.include?(@genre) }
+      - @genres.each_slice(2).with_index do |genre_group, i|
+        - active_class = (i == active_index ? 'active' : '')
+        .carousel-item(class=active_class)
+          .link-container.d-flex.justify-content-evenly.genre-btn
+            = link_to "All", root_path, class: "home-btn"
+            - genre_group.each do |genre|
+              - genre_class = (genre == @genre ? 'active' : '')
+              = link_to genre.name, movies_by_genre_path(genre_id: genre.id), class: "home-btn #{genre_class}"
+
+  #yearCarousel.carousel.slide
+    button.carousel-control-prev(type="button" data-bs-target="#yearCarousel" data-bs-slide="prev")
+      span.carousel-control-prev-icon(aria-hidden="true")
+      span.visually-hidden Previous
+    button.carousel-control-next(type="button" data-bs-target="#yearCarousel" data-bs-slide="next")
+      span.carousel-control-next-icon(aria-hidden="true")
+      span.visually-hidden Next
+    .carousel-inner
+      - @years.each_slice(4).with_index do |year_group, index|
+        .carousel-item(class=(index == 0 ? 'active' : ''))
+          .link-container.d-flex.justify-content-evenly.genre-btn
+            = link_to "All", root_path, class: "home-btn"
+            - year_group.each do |year|
+              = link_to year.year, year_path(year), class: "home-btn"
+  #year.carousel.slide
+    button.carousel-control-prev(type="button" data-bs-target="#year" data-bs-slide="prev")
+      span.carousel-control-prev-icon(aria-hidden="true")
+      span.visually-hidden Previous
+    button.carousel-control-next(type="button" data-bs-target="#year" data-bs-slide="next")
+      span.carousel-control-next-icon(aria-hidden="true")
+      span.visually-hidden Next
+    .carousel-inner
+      - @years.each_slice(2).with_index do |year_group, index|
+        .carousel-item(class=(index == 0 ? 'active' : ''))
+          .link-container.d-flex.justify-content-evenly.genre-btn
+            = link_to "All", root_path, class: "home-btn"
+            - year_group.each do |year|
+              = link_to year.year, year_path(year), class: "home-btn"
+
+  h2.mt-5 Filter by Genre: #{@genre&.name}
+  .row.mt-3
+    - if @genre && @genre.movies.present?
+      - @genre.movies.each do |movie|
+        .col-md-3.col-lg-2.col-4.mb-3
+          = link_to movie do
+            .home-card.card.border-0.bg-transparent.mt-1
+              = image_tag url_for(movie.image), class: "card-img-top" if movie.image.attached?
+              - if current_user
+                    .save-movie
+                        - if current_user && current_user.saved_movies.map(&:movie_id).include?(movie.id)
+                            = link_to({ action: :unsave, id: movie.id }, method: :post) do
+                              = image_tag 'saved_bookmark.svg', class: "bookmark",title: "Unsave movie?"
+                        - else
+                            = link_to({ action: :save, id: movie.id }, method: :post) do
+                              = image_tag 'unsaved_bookmark.svg', class: "bookmark",title: "Save movie?"
+              .card-body
+                - if movie.ratings.present?
+                    - average_rating = movie.ratings.average(:rating)
+                    - filled_stars = average_rating.round(1).to_i
+                    - (filled_stars).times do
+                      = image_tag 'star.svg', class: 'star-icon'
+                    - (5 - filled_stars).times do
+                      = image_tag 'empty-star.svg', class: 'star-icon'
+                - else
+                  - 5.times do
+                    = image_tag 'empty-star.svg', class: 'star-icon'
+
+                h5.card-title
+                  = link_to movie.name, movie
+                p.card-text
+                  = link_to movie.duration, movie
+    - else
+      p.search-movies No results found.
+
+  .row.mt-3
+    = paginate @movies, theme: 'bootstrap-5',
+        pagination_class: "flex-wrap justify-content-center",
+        nav_class: "d-inline-block"

@@ -1,0 +1,62 @@
+/ This block is for including stylesheet and javascript
+- content_for :head do
+  = stylesheet_link_tag "movie/form", as:"style"
+  = stylesheet_link_tag "user/form", as:"style"
+  = javascript_include_tag "preview_image_user", as:"script"
+
+/ Section form for creating new users
+= form_with model: @user, url: create_registration_path do |form|
+  .row
+      div.sec-add-user
+        .sec-image-upload
+          p.mt-5 UPLOAD A PROFILE PICTURE
+          .d-flex.align-items-center
+            = image_tag('icn-add-user.png', alt: 'icn-add-user',class:"icn-add-user",id:"preview-image")
+            div.form-group.sec-browse-image
+              label.add.btn for="image-input" Browse
+              = form.file_field :image, onchange: "previewImage(this)", id: "image-input", style: "display: none;"
+        .col-lg-6.col-12.mt-4
+            div.col-12.form-group
+              .d-flex
+                = form.label :username, "Username"
+                span.required-asterisk *
+              = form.text_field :name, placeholder: "User Name", class: "form-control"
+              - @user.errors.full_messages_for(:name).each do |message|
+                div.error-message= message
+            br
+            div.col-12.form-group
+              .d-flex
+                = form.label :email, "Email"
+                span.required-asterisk *
+              = form.email_field :email, placeholder: "Email", class: "form-control"
+              - @user.errors.full_messages_for(:email).each do |message|
+                div.error-message= message
+            br
+            div.col-12.form-group
+              .d-flex
+                = form.label :password, "Password"
+                span.required-asterisk *
+              = form.password_field :password, placeholder: "Password", class: "form-control"
+              - @user.errors.full_messages_for(:password).each do |message|
+                div.error-message= message
+            br
+            div.col-12.form-group
+              .d-flex
+                = form.label :password_confirmation
+                span.required-asterisk *
+              = form.password_field :password_confirmation, placeholder: "Type password again", autocomplete: "new-password", class: "form-control"
+              - @user.errors.full_messages_for(:password_confirmation).each do |message|
+                div.error-message= message
+            br
+            div.col-12.form-group
+              .d-flex
+                = form.label :admin, 'Role', class: 'me-5'
+                .span.me-2
+                  = form.radio_button :admin, false, checked: true
+                  = form.label :admin, 'User', class: 'ms-2'
+                .span
+                  = form.radio_button :admin, true
+                  = form.label :admin, 'Admin', class: 'ms-2'
+            div.d-flex.justify-content-end
+              = link_to "Cancel", users_path, class: "btn-cancel btn btn-secondary px-3"
+              = form.submit "Publish", class: "btn btn-publish px-3"

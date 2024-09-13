@@ -1,0 +1,65 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "movie/form", as:"style"
+  = stylesheet_link_tag "devise/sign_up", as:"style"
+
+/ Section for new user registration
+div.sec-sign-up
+  div.inner-width.container-fluid.mt-5
+    .row
+      /.navbar-brand.d-flex.justify-content-center.align-items-center
+      /  .d-flex.justify-content-center.align-items-center.logo-brand
+      /    = link_to root_path do
+      /      = image_tag('logo.svg', alt: 'Image Logo',class: "logo-img")
+      /      = link_to "Cinova", root_path, class: "logo-ttl"
+      .col-lg-3.col-0
+      .col-lg-6.col-12.mx-auto
+        .border-form
+          h1.no-border-ttl Sign Up
+          div.form-sign-up.mt-3
+            = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
+              div.field.form-group
+                = f.label :name
+                = f.text_field :name, class: "form-control", placeholder: "Name", autofocus: true, autocomplete: "name"
+                - if resource.errors.has_key?(:name)
+                  div.text-danger= "Name " + resource.errors[:name].first
+              br
+
+              div.form-group
+                .field
+                  = f.label :email, "Email"
+                  br
+                  em  example@gmail.com
+                  = f.email_field :email, placeholder: "Email", autofocus: true, autocomplete: "email" ,class: "form-control"
+                  - if resource.errors.has_key?(:email)
+                    div.text-danger= "Email " + resource.errors[:email].first
+              br
+
+              div.form-group
+                .field
+                  = f.label :password
+                  br
+                  - if @minimum_password_length
+                    em  #{@minimum_password_length}characters minimum
+                  br
+                  = f.password_field :password, placeholder: "Password", autocomplete: "new-password", class: "form-control"
+                  - if resource.errors.has_key?(:password)
+                    div.text-danger= "Password " + resource.errors[:password].first
+              br
+
+              div.form-group
+                .field
+                  = f.label :password_confirmation
+                  = f.password_field :password_confirmation, placeholder: "Type Password Again", autocomplete: "new-password", class: "form-control"
+                  - if resource.errors.has_key?(:password_confirmation)
+                    div.text-danger= "Password confirmation " + resource.errors[:password_confirmation].first
+
+              div.actions.mt-4
+                = f.submit "Sign up", class:"sign-up-btn btn btn-primary"
+
+              div.d-flex.mt-3.align-items-baseline
+                p.text-white Already have an account?
+                div.login-btn
+                    = render "devise/shared/links"
+
+      .col-lg-3.col-0

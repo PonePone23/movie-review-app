@@ -1,0 +1,65 @@
+/ Section header
+div.header
+  div.sec-header style="background: url('#{image_path('img-header-bg.png')}') no-repeat center/cover;"
+    row.nav.navbar.navbar-expand-lg.inner-width.container-fluid.pt-5
+      div.navbar-brand.col-3.d-flex.align-items-center
+        = link_to root_path do
+          = image_tag('logo.svg', alt: 'Image Logo', class: "logo-img")
+          = link_to "Cinova", root_path, class: "logo-ttl"
+
+      button.navbar-toggler type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+        span.navbar-toggler-icon
+
+      div.collapse.navbar-collapse#navbarNav.col-6.justify-content-end
+        ul.navbar-nav.align-items-center
+          li.nav-item
+            = link_to "Movies", root_path, class: "nav-link" ,class:("active" if current_page?(root_path))
+
+          li.nav-item
+            = link_to "Up Coming",  up_coming_path, class: "nav-link" ,class:("active" if current_page?( up_coming_path))
+
+          - if current_user && current_user.admin?
+            li.nav-item
+              = link_to "Add Movie", new_movie_path, class: "nav-link",class:("active" if current_page?(new_movie_path))
+
+          - if user_signed_in?
+            li.nav-item
+              = link_to "Released Year", years_path, class: "nav-link",class:("active" if current_page?(years_path))
+
+            li.nav-item
+              = link_to "Genres", genres_path, class: "nav-link", class:("active" if current_page?(genres_path))
+
+            - notifications_count = current_user.notifications.count
+            li.nav-item
+              = link_to "Notifications", notifications_path,class:("active" if current_page?(notifications_path))
+              span.badge.badge-pill= notifications_count
+
+            - if current_user && current_user.admin?
+              li.nav-item
+                = link_to "Users", users_path, class: "nav-link",class:("active" if current_page?(users_path))
+
+            li.nav-item.last-nav-link.dropdown
+              - if current_user
+                a.d-flex.align-items-center.justify-content-center.nav-link.dropdown-toggle href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    .user-name class=("active" if current_page?(edit_user_registration_path) ||current_page?(saved_movies_user_path(current_user)) ||current_page?(discussions_path)|| current_page?(dashboard_users_path))
+                      = current_user.name
+                    = image_tag url_for(current_user.image),class: 'img-profile' if current_user.image.attached?
+              div.dropdown-menu aria-labelledby="navbarDropdown"
+                div.dropdown-item
+                  = link_to "Profile",  edit_user_registration_path, class: "profile-btn" ,class:("active" if current_page?(edit_user_registration_path))
+                div.dropdown-item
+                  = link_to "Saved Lists", saved_movies_user_path(current_user), class:("active" if current_page?(saved_movies_user_path(current_user)))
+                - if current_user && current_user.admin?
+                  div.dropdown-item
+                    = link_to "Dashboard", dashboard_users_path,class:, class:("active" if current_page?(dashboard_users_path))
+                div.dropdown-item
+                  = link_to "Discussions", discussions_path, class:("active" if current_page?(discussions_path))
+                = link_to "Log Out", destroy_user_session_path, class: "dropdown-item "
+          - else
+            li.nav-item
+              = link_to "Sign Up", new_user_registration_path, class: "nav-link" ,class:("active" if current_page?(new_user_registration_path))
+            li.nav-item
+              = link_to "Log In", new_user_session_path, class: "nav-link",class:("active" if current_page?(new_user_session_path))
+
+  - if request.path == root_path || request.path == new_movie_path || request.path == search_path
+    = render 'searchBar'

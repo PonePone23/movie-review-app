@@ -1,0 +1,9 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "genre/edit", as:"style"
+
+/ Section for creating new genre
+div.sec-edit-genre.mt-5
+  div.inner-width.container-fluid
+    h3.mx-auto.edit-ttl New genre
+    == render "form" ,genre: @genre

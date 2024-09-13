@@ -1,0 +1,82 @@
+/ This block is to include stylesheet
+- content_for :head do
+  = stylesheet_link_tag "year/index", as:"style"
+
+/ Section for showing paginaged list of years
+div.sec-year.mt-5
+  div.inner-width.container-fluid
+    .row.d-flex
+      - if current_user && current_user.admin?
+        .col-lg-3.col-4
+          .row
+            .col-lg-3.col-12
+                  h2 Year
+            .col-lg-7.col-12
+              div.add-btn.d-flex.align-items-center.justify-content-center
+                = image_tag('icn-add.png', alt: 'img create',class:"icon")
+                = link_to "Add Year",new_year_path
+        .col-lg-3.col-1
+        .col-lg-6.col-7
+          .row
+            .col-lg-6.d-flex.justify-content-lg-end.col-sm-12
+              div.search-container
+                = form_tag search_years_path, method: "get" , class: "search-box" do
+                  = search_field_tag :search, params[:search], placeholder: "Search year..."
+                  = button_tag type: "submit" do
+                    = image_tag('icn-search.svg', alt: 'img-movie1',class:"search-icon")
+            .col-lg-3.col-6
+              .import.text-center
+                = form_tag import_years_path, multipart: true, id: "import-form" do
+                  = image_tag('icn-import.png', alt: 'icn-import',class:"add-user-icn")
+                  label.import-user for="file-input" Import
+                  input type="file" name="file" id="file-input" style="display: none;" onchange="this.form.submit()"
+                  label for="file-input" id="file-label" style="display: none;" No chosen file
+                  = submit_tag "Import", style: "display: none;"
+            .col-lg-3.col-6
+              .export.text-center
+                = image_tag('icn-export.png', alt: 'icn-export',class:"add-user-icn")
+                = link_to "Export", export_years_path , class: "export-user"
+
+      - else
+        .col-lg-3.col-sm-12
+          div.d-flex.genre-ttl
+            h2 Year
+        .col-lg-3.col-6
+        .col-lg-6.col-7.d-flex.justify-content-lg-end.col-sm-12.col-12
+          div.search-container
+            = form_tag(search_years_path, method: "get")
+            = search_field_tag :search, params[:search], placeholder: "Search year..."
+            = button_tag type: "submit" do
+              = image_tag('icn-search.svg', alt: 'img-movie1',class:"search-icon")
+
+    table.table.table-dark.table-hover.text-center.mt-5
+             thead
+               tr
+                th scope="col" NO
+                th scope="col" RELEASED YEAR
+                th scope="col" Movie Lists
+                - if current_user && current_user.admin?
+                   th scope="col" ACTIONS
+
+             tbody
+               - count = (@years.current_page - 1) * @years.limit_value
+               - @years.each do |year|
+                tr
+                  td = count+=1
+                  td
+                    = year.year
+                  td
+                    =link_to "Movies List" , year_path(year)
+                  - if current_user && current_user.admin?
+                   td
+                     div.d-flex.justify-content-center
+                      .edit
+                        = image_tag('img-edit-icon.png', alt: 'img-movie1',class:"edit-icon")
+                        = link_to "Edit",edit_year_path(year)
+                      .delete
+                        = image_tag('img-delete-icon.png', alt: 'img-movie1',class:"delete-icon")
+                        = link_to "Delete", year_path(year), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" , turbo: true }
+    .row
+      = paginate @years, theme: 'bootstrap-5',
+        pagination_class: "flex-wrap justify-content-center",
+        nav_class: "d-inline-block"

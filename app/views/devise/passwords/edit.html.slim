@@ -1,0 +1,44 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "movie/form"
+  = stylesheet_link_tag "devise/sign_up"
+  = stylesheet_link_tag "devise/log_in"
+
+/ Section for changing password
+div.sec-sign-up
+  div.inner-width.container-fluid.mt-5
+    .row
+      .col-lg-3.col-0
+      .col-lg-6.col-12
+        .border-form
+          h2.no-border-ttl Change Your Password
+          div.form-sign-up.mt-3
+            = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }, remote: true, authenticity_token: true) do |f|
+              = render "devise/shared/error_messages", resource: resource
+              = f.hidden_field :reset_password_token
+              div.form-group
+                  .field
+                    = f.label :password, "New password"
+                    br
+                    - if @minimum_password_length
+                      em #{@minimum_password_length} characters minimum
+                      br
+                    = f.password_field :password, autofocus: true, autocomplete: "new-password" ,class: "form-control"
+              br
+              div.form-group
+                .field
+                  = f.label :password_confirmation, "Confirm new password"
+                  br
+                  = f.password_field :password_confirmation, autocomplete: "new-password" ,class: "form-control"
+              br
+              .actions
+                = f.submit "Change my password", class:"sign-up-btn btn btn-primary"
+
+            div.pt-2.d-flex.justify-content-between
+                  - if controller_name != 'sessions'
+                    = link_to "Log in", new_session_path(resource_name)
+
+                  - if devise_mapping.registerable? && controller_name != 'registrations'
+                    = link_to "Sign up", new_user_registration_path
+
+      .col-lg-3.col-0

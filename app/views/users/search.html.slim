@@ -1,0 +1,40 @@
+/ This block is to include stylesheet
+- content_for :head do
+  = stylesheet_link_tag "user/index", as:"style"
+
+/ Section for searching users based on user name
+div.sec-user-index
+  div.inner-width.container-fluid.search
+    = render "userMenu"
+    -if @results.present?
+      table.table.table-dark.table-hover.mt-5.user-table.text-center
+        thead
+          tr
+            th.display scope="col" NO
+            th scope="col" BASIC INFO
+            th.display scope="col" USER NAME
+            th.display scope="col" CREATED DATE
+            th scope="col" ACTIONS
+        tbody
+          - @results.each_with_index do |result,index|
+            tr
+              td.display scope="col" = index+1
+              td scope="col"
+                .d-flex.justify-content-start.align-items-center.basic-info
+                  = image_tag url_for(result.image),class: 'admins-append-icon' if result.image.attached?
+                  .d-flex.flex-column.basic-info-text
+                    p.p-0.m-0 = result.name
+                    p.p-0.m-0.italic-text = result.email
+              td.display scope="col"  = result.name
+              td.display scope="col" = result.created_at.strftime("%Y-%m-%d")
+              td scope="col"
+                div.btn-container
+                  .edit
+                    = image_tag('img-edit-icon.png', alt: 'img-movie1',class:"edit-icon")
+                    = link_to 'Edit', edit_user_path(result)
+                  .delete
+                    = image_tag('img-delete-icon.png', alt: 'img-movie1',class:"delete-icon")
+                    = link_to "Delete", user_path(result), data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true  }
+
+    - else
+      p.result No results found.

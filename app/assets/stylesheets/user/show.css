@@ -1,0 +1,26 @@
+.delete {
+  display: inline-block;
+  position: relative;
+  margin: 0px 5px;
+  padding: 7px 20px 7px 30px;
+  background-color: #842727;
+  border-radius: 10px;
+}
+
+.delete a:hover {
+  opacity: 0.9;
+}
+
+.delete a {
+  color: #ffffff;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 12px;
+  right: 65px;
+  z-index: 999;
+}

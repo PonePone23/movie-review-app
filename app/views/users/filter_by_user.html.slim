@@ -1,0 +1,35 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "genre/index", as:"style"
+
+/ Section for showing users' actvities based on user
+div.sec-u-activity.mt-5
+  div.inner-width.container-fluid
+    .d-flex.justify-content-between.align-items-center.flex-wrap
+      - if @user!=nil
+        h2 Activities of #{@user.name}(#{@user.email})
+        = link_to 'Delete All Activities of this User', delete_user_activities_path(@user), data: { turbo_method: :delete, turbo_confirm: "Are you sure?" , turbo: true }, class: 'btn btn-danger small-font margin-t'
+      - else
+        h2 Activities for all
+
+    table.table.table-hover.mt-5.text-center.table-dark
+      thead
+        tr
+          th scope="col" Name
+          th scope="col" Activity
+          th scope="col" Time
+
+      tbody
+        - @activities.each do |activity|
+          tr
+            td= activity.user.name
+            td= activity.action.capitalize
+            td= activity.created_at.in_time_zone('Rangoon').strftime("%I:%M:%S %p %A, %B %d, %Y")
+    .row
+      = paginate @activities, theme: 'bootstrap-5',
+        pagination_class: "flex-wrap justify-content-center",
+        nav_class: "d-inline-block"
+    .back
+        = link_to 'Back', dashboard_users_path ,class:"btn back-btn"
+
+

@@ -1,0 +1,32 @@
+/ This block is to include stylesheet
+- content_for :head do
+  = stylesheet_link_tag "movie/index", as:"style"
+
+/ Section for searching movies based on search parameter
+div.inner-width.container-fluid.mt-5.sec-home
+  .d-flex.justify-content-between
+    h2 Search Results
+  - if @results.present?
+    .row.mt-5
+      - @results.each do |movie|
+        .col-md-3.col-lg-2.col-4.mb-3
+          =link_to movie
+            .home-card.card.border-0.bg-transparent
+              = image_tag url_for(movie.image), class: "card-img-top" if movie.image.attached?
+              .card-body
+                - if movie.ratings.present?
+                    - average_rating = movie.ratings.average(:rating)
+                    - filled_stars = average_rating.round(1).to_i
+                    - (filled_stars).times do
+                      = image_tag 'star.svg', class: 'star-icon'
+                    - (5 - filled_stars).times do
+                      = image_tag 'empty-star.svg', class: 'star-icon'
+                - else
+                  - 5.times do
+                    = image_tag 'empty-star.svg', class: 'star-icon'
+                h5.card-title
+                  = link_to movie.name, movie
+                p.card-text
+                  = link_to movie.duration, movie
+  - else
+    p.search-movies No results found.

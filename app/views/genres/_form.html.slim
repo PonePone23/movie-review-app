@@ -1,0 +1,19 @@
+/ This block is used to include a stylesheet
+- content_for :head do
+  = stylesheet_link_tag "movie/form", as:"style"
+  = stylesheet_link_tag "year/form", as:"style"
+
+/ Section for creating and editing genres
+.div.mx-auto.form-container.sec-movie-form
+  = form_with model: genre do |form|
+    .form-group
+      .d-flex
+        = form.label :name, "Name"
+        span.required-asterisk *
+      = form.text_field :name, placeholder: "Genre name", class: "form-control"
+      - genre.errors.full_messages_for(:name).each do |message|
+        div.error-message= message
+
+    .d-flex.justify-content-end.mt-3
+      = link_to "Cancel", genres_path, class: "btn btn-secondary small-font px-3"
+      = form.submit "Upload", class: "btn btn-update"

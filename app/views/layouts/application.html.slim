@@ -1,0 +1,41 @@
+doctype html
+html
+  head
+    title MovieReview
+    meta name="viewport" content="width=device-width, initial-scale=1"
+    meta name="turbo-refresh-method" content="morph"
+    = csrf_meta_tags
+    = csp_meta_tag
+    link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"
+    meta name="turbo-refresh-method" content="morph"
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_importmap_tags
+    = javascript_include_tag "application", "data-turbo-track": "reload", defer: true, type: "module"
+    script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"
+    script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"
+    script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"
+    link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    == yield :head
+    = javascript_include_tag "back_to_top"
+  body.min-height
+    /- unless current_page?(new_user_registration_path) || current_page?(new_user_session_path) || current_page?(new_user_password_path) || current_page?(edit_user_password_path) || current_page?(user_password_path) || (flash[:alert].present? && (flash[:alert].include?("Invalid Email or password.") || flash[:alert].include?("Please fix the errors below.") ))
+    =render "movies/header"
+    div.container
+      - if notice
+        div.alert.alert-success.alert-dismissible.fade.show.mt-3 role="alert"
+          = notice
+          button.btn-close type="button" data-bs-dismiss="alert" aria-label="Close"
+
+      - if alert
+        div.alert.alert-danger.alert-dismissible.fade.show.mt-3 role="alert"
+          = alert
+          button.btn-close type="button" data-bs-dismiss="alert" aria-label="Close"
+
+    button.btn.btn-floating.btn-lg#btn-back-to-top.d-none(type="button")
+      = image_tag 'up-arrow.svg'
+
+    == yield
+    -unless current_page?(root_path)
+      =render "movies/footer_visitor"
+    -else 
+      =render "movies/footer", feedback: @feedback

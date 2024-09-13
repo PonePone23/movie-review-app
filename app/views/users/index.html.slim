@@ -1,0 +1,49 @@
+/ This block is to include stylesheet
+- content_for :head do
+  = stylesheet_link_tag "user/index", as:"style"
+
+/ Section for showing paginated list of users
+div.sec-user-index
+  div.inner-width.container-fluid
+    = render "userMenu"
+    table.table.table-dark.table-hover.mt-5.user-table.text-center
+      thead
+        tr
+          th.display scope="col" NO
+          th scope="col" BASIC INFO
+          th.display scope="col" USER NAME
+          th.display scope="col" CREATED DATE
+          th scope="col" ACTIONS
+      tbody
+        - count = (@users.current_page-1)* @users.limit_value+1
+        - @users.each do |user|
+          - unless user == current_user
+            tr
+              td.display scope="col" = count
+              - count = count+1
+              td scope="col"
+                .d-flex.justify-content-center.align-items-center
+                  .d-flex.basic-info
+                    - if user.image.attached?
+                      = image_tag url_for(user.image),class: 'admins-append-icon'
+                    - else
+                      = image_tag url_for("icn-add-user.png"),class: 'admins-append-icon'
+                    .d-flex.flex-column.basic-info-text
+                        p.p-0.m-0 = user.name
+                        p.p-0.m-0.italic-text = user.email
+                        p.p-0.m-0 =user.admin? ? "Admin" : "User"
+              td.display scope="col"  = user.name
+              td.display scope="col" = user.created_at.strftime("%Y-%m-%d")
+              td scope="col"
+                div.btn-container
+                  .edit
+                    = image_tag('img-edit-icon.png', alt: 'img-movie1',class:"edit-icon")
+                    = link_to 'Edit', edit_user_path(user)
+
+                  .delete
+                    = image_tag('img-delete-icon.png', alt: 'img-movie1',class:"delete-icon")
+                    = link_to "Delete", user_path(user), data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true  }
+  .row
+    = paginate @users, theme: 'bootstrap-5',
+      pagination_class: "flex-wrap justify-content-center",
+      nav_class: "d-inline-block"

@@ -1,0 +1,19 @@
+= javascript_include_tag "rating", as:"script"
+
+/ Section for rating model box
+= form_with(model: [movie, Rating.new], local: true, id: "rating-form") do |form|
+  .row
+    .form-group
+      - existing_rating = @movie.ratings.find_by(user: current_user)
+      = form.select :rating, (1..5), { prompt: "Select rating" }, class: "form-control", id: "rating-select", style: "display: none;"
+    .col-12.star-rating.d-flex.justify-content-center.align-items-center
+      - (1..5).each do |rating|
+        .star-container(onclick="submitRating(#{rating})")
+          .rating-label.text-center
+            #rating-description
+          - if existing_rating.present? && existing_rating.rating >= rating
+            span.fa.fa-star.checked id="star-#{rating}"
+          - else
+            span.fa.fa-star.unchecked id="star-#{rating}"
+    - if existing_rating.present?
+      = link_to "Remove Rating", movie_rating_path(@movie, existing_rating),class: " btn btn-danger w-50 mx-auto" , method: :delete, data: { turbo_method: :delete, turbo:true }

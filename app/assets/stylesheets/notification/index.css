@@ -1,0 +1,81 @@
+.sec-noti {
+  min-height: 40vh;
+
+  .notification {
+    padding: 15px;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .3), 0 2px 2px 0 rgba(0, 0, 0, .3), 0 1px 5px 0 rgba(0, 0, 0, .3);
+    background-color: #2A2D2F;
+    color: #ffffff;
+    border-radius: 10px;
+
+    p {
+      padding: 0px 5px;
+    }
+
+    .noti-action {
+      margin-left: 10px;
+      color: #ffffff;
+      font-style: italic;
+    }
+
+    .noti-body::before {
+      content: '"';
+    }
+
+    .noti-body::after {
+      content: '"';
+    }
+
+    .noti-body-movie {
+      font-style: italic;
+    }
+  }
+
+  .img-user-noti {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+  }
+
+  .min-ago {
+    display: flex;
+    justify-content: end;
+  }
+
+  .noti-body-movie {
+    margin-left: 10px;
+  }
+
+  .noti-delete {
+    background-color: #842727;
+    color: #ffffff;
+    border-radius: 10px;
+  }
+
+  .btn:hover {
+    background-color: #842727;
+    color: #ffffff;
+    border-radius: 10px;
+    opacity: 0.6;
+  }
+
+}
+
+@media (max-width: 575.98px) {
+  .noti-body {
+    padding-right: 10px;
+  }
+
+  .inner-width {
+    padding: 0px 10px;
+  }
+
+  .noti-action,
+  .noti-name {
+    font-size: 15px;
+  }
+
+  .noti-time {
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,72 @@
+- content_for :head do
+  = stylesheet_link_tag "notification/index", as:"style"
+  = stylesheet_link_tag "discussion/index", as:"style"
+
+div.inner-width.container-fluid
+  div.mt-5.mb-3.sec-show
+    h2 Discussions on
+    div.discussion-content.mt-3
+      p.diss-content = @discussion.content
+      - loves_count = @discussion.reactions.where(reaction_type: 'love').count
+      - likes_count = @discussion.reactions.where(reaction_type: 'like').count
+      - dislikes_count = @discussion.reactions.where(reaction_type: 'dislike').count
+      .row.mt-1.sec-reactions-show.mx-0
+        .col-lg-4.p-0
+          - if @reactions.any?
+            span data-bs-toggle="popover" data-bs-content="#{@discussion.reactions.where(reaction_type: 'love').map(&:user_name).join(', ')}" data-bs-placement="top" style="cursor: pointer;"
+              | 😍: #{loves_count}
+            span data-bs-toggle="popover" data-bs-content="#{@discussion.reactions.where(reaction_type: 'like').map(&:user_name).join(', ')}" data-bs-placement="top" style="cursor: pointer;"
+              | 👍: #{likes_count}
+            span data-bs-toggle="popover" data-bs-content="#{@discussion.reactions.where(reaction_type: 'dislike').map(&:user_name).join(', ')}" data-bs-placement="top" style="cursor: pointer;"
+              | 👎: #{dislikes_count}
+          - else
+            p.text-white No reactions yet.
+
+      div.sec-reaction-reply.mt-3
+        / Reaction form
+        div.reaction-from
+          = form_for([@discussion, @discussion.reactions.build], remote: true, authenticity_token: true) do |form|
+            = form.hidden_field :user_id, value: current_user.id
+            .d-flex
+              = form.select :reaction_type, [['😍 Love', 'love'], ['👍 Like', 'like'], ['👎 Dislike', 'dislike']], {}, class: "form-select"
+              = form.submit 'React', class: "btn btn-new ml-3"
+        / Reply form
+        div.reply-form.mt-3
+          p.text-white Add your thought:
+          = form_for([@discussion, @discussion.replies.build], remote: true, authenticity_token: true) do |form|
+            = form.hidden_field :user_id, value: current_user.id
+            = form.text_area :content, class: "form-control", style: "resize: none;"
+            = form.submit 'Reply', class: "btn btn-new mt-2"
+
+      .sec-noti.row.mt-3.mx-0
+        h5.text-white Replies:
+        - if @replies.any?
+          - @replies.each do |reply|
+            div.notification.mb-3
+              .d-flex.justify-content-between
+                .d-flex
+                  - if reply.user.image.attached?
+                    = image_tag url_for(reply.user.image), class: "img-user-noti"
+                  strong.noti-name = reply.user.name
+                div.noti-time
+                  | #{time_ago_in_words(reply.created_at)} ago
+              .d-flex.justify-content-between.align-items.center.mt-2
+                div
+                  .noti-body = reply.content
+                div
+                  - if current_user == reply.user || current_user.admin
+                    = link_to 'Delete', discussion_reply_path(@discussion, reply), data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true }, class: "btn btn-delete"
+          = paginate @replies, theme: 'bootstrap-5', pagination_class: "flex-wrap justify-content-center", nav_class: "d-inline-block"
+        - else
+          p.text-white No replies yet.
+    / Add back button here
+    .sec-reaction-reply
+      = link_to 'Back to Discussions', discussions_path, class: 'btn btn-new mt-3'
+
+javascript:
+  document.addEventListener('turbo:load', function() {
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl);
+    });
+  });

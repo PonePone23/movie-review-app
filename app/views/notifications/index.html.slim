@@ -1,0 +1,39 @@
+/ This block is to include stylesheet
+- content_for :head do
+  = stylesheet_link_tag "notification/index", as:"style"
+
+/ Section for showing notifications
+.sec-noti.container-fluid.p-0
+  .inner-width.mx-auto
+    .row.mt-5.mb-3.mx-0
+      .d-flex.justify-content-between.align-items-center.p-0
+        div.d-flex.align-items-center
+          h2 Notifications
+          = image_tag('icn-bell.svg', alt: 'Image Logo')
+        div
+          = link_to "Dimiss All", delete_all_notifications_path, data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true }, class: "btn noti-delete ml-auto"
+    - @notifications.each do |notification|
+      .notification.mb-3
+        .d-flex.justify-content-between
+          div
+            .d-flex.align-items-center
+              = image_tag url_for(notification.actor.image), class:"img-user-noti" if notification.actor.image.attached?
+              strong.noti-name = notification.actor.name
+              .noti-action #{notification.action}:
+          div.noti-time
+            | #{time_ago_in_words(notification.created_at)} ago
+        .d-flex.align-items-end.justify-content-between.mt-2
+          div
+                - if notification.notifiable.present?
+                  .noti-body = notification.notifiable.description
+                  strong
+                    | in movie:
+                    = link_to notification.notifiable.movie.name, movie_path(notification.notifiable.movie), class:"noti-body-movie"
+                - else
+                  | "Your comment has been deleted."
+          div
+            = link_to "Delete", notification_path(notification), data: { turbo_method: :delete, turbo_confirm: "Are you sure?", turbo: true }, class: "btn btn-sm noti-delete ml-2"
+    .row
+      = paginate @notifications, theme: 'bootstrap-5',
+        pagination_class: "flex-wrap justify-content-center",
+        nav_class: "d-inline-block"

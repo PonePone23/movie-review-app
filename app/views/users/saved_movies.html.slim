@@ -1,0 +1,86 @@
+/ This block is for including stylesheet
+- content_for :head do
+  = stylesheet_link_tag "movie/index", as:"style"
+= javascript_include_tag 'list-grid-view', as:"script"
+
+/ Section for showing saved movies list
+div.inner-width.container-fluid.sec-home
+  .row.mt-5.mb-3
+      .d-flex.justify-content-between.align-items-center
+        div
+          h2 Saved Movies
+        div.d-flex
+          div.icon-l.mx-2.px-2.py-1.active-lg
+            = link_to 'javascript:void(0)', onclick: 'showlist()', class: 'grid-icon' do
+              = image_tag asset_path('grid-view.svg') , class: 'icong-small'
+          div.icon-g.p-1
+            = link_to 'javascript:void(0)', onclick: 'showgrid()', class: 'grid-icon' do
+              = image_tag asset_path('list-view.svg') , class: ''
+
+
+  .row.mt-5.list-view
+    - if @saved_movies.any?
+      -  @saved_movies.each do |movie|
+        .col-sm-4.col-md-3.col-lg-2.col-4.mb-3
+          = link_to movie do
+            .home-card.card.border-0.bg-transparent.mt-1
+              = image_tag url_for(movie.image), class: "card-img-top" if movie.image.attached?
+              - if current_user
+                        .save-movie
+                            - if current_user && current_user.saved_movies.map(&:movie_id).include?(movie.id)
+                                = link_to({ action: :unsave, id: movie.id }, method: :post) do
+                                  = image_tag 'saved_bookmark.svg', class: "bookmark",title: "Unsave movie?"
+              .card-body
+                - if movie.ratings.present?
+                      - average_rating = movie.ratings.average(:rating)
+                      - filled_stars = average_rating.round(1).to_i
+                      - (filled_stars).times do
+                        = image_tag 'star.svg', class: 'star-icon'
+                      - (5 - filled_stars).times do
+                        = image_tag 'empty-star.svg', class: 'star-icon'
+                - else
+                  - 5.times do
+                    = image_tag 'empty-star.svg', class: 'star-icon'
+
+                h5.card-title
+                  = link_to movie.name, movie
+                p.card-text
+                  = link_to movie.duration, movie
+    - else
+      h5.text-white No saved movies.
+  .row.mt-5.grid-view.hidden
+    - if @saved_movies.any?
+      -  @saved_movies.each do |movie|
+        .col-12.px-3
+          = link_to movie do
+            .list-card.card.border-0.mb-3.flex-row
+              .d-flex
+                = image_tag url_for(movie.image), class: "list-card-img" if movie.image.attached?
+                - if current_user
+                    .save-movie-list
+                      - if current_user && current_user.saved_movies.map(&:movie_id).include?(movie.id)
+                          = link_to({ action: :unsave, id: movie.id }, method: :post) do
+                            = image_tag 'saved_bookmark.svg', class: "bookmark-list",title: "Unsave movie?"
+              .card-body
+                - if movie.ratings.present?
+                        - average_rating = movie.ratings.average(:rating)
+                        - filled_stars = average_rating.round(1).to_i
+                        - (filled_stars).times do
+                          = image_tag 'star.svg', class: 'star-icon'
+                        - (5 - filled_stars).times do
+                          = image_tag 'empty-star.svg', class: 'star-icon'
+                - else
+                    - 5.times do
+                      = image_tag 'empty-star.svg', class: 'star-icon'
+
+                h4.card-title
+                    = link_to movie.name, movie
+
+                p.card-text
+                    = link_to movie.duration, movie, class:"text-white"
+
+    - else
+      h5.text-white No saved movies.
+
+  .mt-5
+    = paginate @saved_movies, theme: 'bootstrap-5', pagination_class: "flex-wrap justify-content-center", nav_class: "d-inline-block"

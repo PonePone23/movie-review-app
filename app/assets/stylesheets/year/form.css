@@ -1,0 +1,84 @@
+.define-height {
+  min-height: 40vh;
+}
+
+.edit-year {
+  margin: 0 auto;
+  max-width: 40%;
+}
+
+.form-container {
+  width: 40%;
+  margin: 0 auto;
+}
+
+input[type="number"] {
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #2A2D2F;
+  color: #fff;
+}
+
+input[type="number"]:focus {
+  box-shadow: 0 0 5px #fff;
+  background-color: #2A2D2F;
+  color: #fff;
+  outline: solid;
+  border-color: #fff;
+}
+
+label {
+  margin-bottom: 10px;
+  color: #707070;
+}
+
+.cancel {
+  margin-right: 10px;
+  padding: 10px 30px;
+}
+
+.btn-update {
+  margin-left: 10px;
+  background-color: #124559;
+  color: #fff;
+}
+
+.btn-update:hover {
+  background-color: #124559;
+  color: #fff;
+}
+
+.update {
+  padding: 10px 30px;
+}
+
+@media (max-width: 991.98px) {
+  .form-container {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .edit-year {
+    margin: 0 auto;
+    max-width: 73%;
+  }
+
+  .form-group {
+    width: 75%;
+    margin: 0 auto;
+  }
+
+  .cancel {
+    margin-right: 5px;
+    padding: 10px 20px;
+  }
+
+  .update {
+    padding: 10px 20px;
+  }
+
+  .small-font {
+    font-size: 13px;
+  }
+}
