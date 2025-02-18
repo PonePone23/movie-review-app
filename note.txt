@@ -1,0 +1,9 @@
+# MySQL Database Configuration
+#.env
+RAILS_DB_HOST=localhost
+RAILS_DB_PORT=3306
+RAILS_DB_USERNAME=root
+RAILS_DB_PASSWORD=20042000
+RAILS_DB_NAME=movie_review
+DEFAULT_EMAIL=cinova.org@gmail.com
+
